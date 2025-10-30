@@ -5,7 +5,7 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
 
     <!-- PWA / Full Screen Mode -->
@@ -15,9 +15,30 @@
       content="black-translucent"
     />
     <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="theme-color" content="#10b981" />
+    <meta name="theme-color" content="#ffffff" />
 
     <title>ELVIRA - Hotel Management System</title>
+    
+    <style>
+      /* Force minimal UI and hide address bar on scroll */
+      html {
+        height: 100%;
+        overflow: hidden;
+      }
+      
+      body {
+        height: 100%;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: none;
+      }
+      
+      #root {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+      }
+    </style>
+    
     <!-- Google Fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
