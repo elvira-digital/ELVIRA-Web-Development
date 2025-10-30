@@ -127,18 +127,14 @@ export const PlaceDetailBottomSheet: React.FC<PlaceDetailBottomSheetProps> = ({
     return null;
   };
 
-
-
   // Build photo URL - extract reference and rebuild URL (same as cards)
   let photoUrl: string | null = null;
   const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY || "";
-
 
   if (googleData.photo_reference) {
     const photoRef = extractPhotoReference(googleData.photo_reference);
     if (photoRef) {
       photoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${photoRef}&key=${GOOGLE_API_KEY}`;
-
     }
   } else if (
     googleData.photos &&
@@ -150,12 +146,9 @@ export const PlaceDetailBottomSheet: React.FC<PlaceDetailBottomSheetProps> = ({
       const photoRef = extractPhotoReference(firstPhoto.photo_reference);
       if (photoRef) {
         photoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${photoRef}&key=${GOOGLE_API_KEY}`;
-
       }
     }
   }
-
-
 
   // Calculate distance if hotel coordinates are provided
   let distance: string | null = null;
@@ -182,19 +175,19 @@ export const PlaceDetailBottomSheet: React.FC<PlaceDetailBottomSheetProps> = ({
 
   return (
     <GuestBottomSheet isOpen={isOpen} onClose={onClose}>
-      <div className="pb-6">
+      <div className="pb-4">
         {/* Image */}
         {photoUrl ? (
-          <div className="relative w-full h-64 bg-gray-200">
+          <div className="relative w-full h-48 bg-gray-200">
             <img
               src={photoUrl}
               alt={place.name}
               className="w-full h-full object-cover"
             />
             {place.recommended && (
-              <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-1">
+              <div className="absolute top-3 left-3 bg-red-500 text-white px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1">
                 <svg
-                  className="w-4 h-4 fill-current"
+                  className="w-3 h-3 fill-current"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
@@ -204,9 +197,9 @@ export const PlaceDetailBottomSheet: React.FC<PlaceDetailBottomSheetProps> = ({
               </div>
             )}
             {googleData.opening_hours?.open_now !== undefined && (
-              <div className="absolute top-4 right-4">
+              <div className="absolute top-3 right-3">
                 <span
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium ${
+                  className={`px-2.5 py-1 rounded-full text-xs font-medium ${
                     googleData.opening_hours.open_now
                       ? "bg-emerald-500 text-white"
                       : "bg-red-500 text-white"
@@ -218,30 +211,30 @@ export const PlaceDetailBottomSheet: React.FC<PlaceDetailBottomSheetProps> = ({
             )}
           </div>
         ) : (
-          <div className="w-full h-64 bg-linear-to-br from-emerald-50 to-emerald-100 flex items-center justify-center">
-            <MapPin className="w-16 h-16 text-emerald-300" />
+          <div className="w-full h-48 bg-linear-to-br from-emerald-50 to-emerald-100 flex items-center justify-center">
+            <MapPin className="w-12 h-12 text-emerald-300" />
           </div>
         )}
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="p-4 space-y-4">
           {/* Title & Type */}
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="text-lg font-bold text-gray-900 mb-1.5">
               {place.name}
             </h2>
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-full border border-emerald-200">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-full border border-emerald-200">
                 {place.type}
               </span>
               {priceLevel && (
-                <span className="flex items-center gap-1 text-sm text-gray-600">
-                  <DollarSign className="w-4 h-4" />
+                <span className="flex items-center gap-0.5 text-xs text-gray-600">
+                  <DollarSign className="w-3 h-3" />
                   {priceLevel}
                 </span>
               )}
               {googleData.business_status === "OPERATIONAL" && (
-                <span className="text-sm text-emerald-600 font-medium">
+                <span className="text-xs text-emerald-600 font-medium">
                   ● Operational
                 </span>
               )}
@@ -252,13 +245,13 @@ export const PlaceDetailBottomSheet: React.FC<PlaceDetailBottomSheetProps> = ({
           {googleData.rating && (
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
-                <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
-                <span className="text-lg font-semibold text-gray-900">
+                <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                <span className="text-base font-semibold text-gray-900">
                   {googleData.rating.toFixed(1)}
                 </span>
               </div>
               {googleData.user_ratings_total && (
-                <span className="text-sm text-gray-500">
+                <span className="text-xs text-gray-500">
                   ({googleData.user_ratings_total.toLocaleString()} reviews)
                 </span>
               )}
@@ -267,19 +260,19 @@ export const PlaceDetailBottomSheet: React.FC<PlaceDetailBottomSheetProps> = ({
 
           {/* Address */}
           {googleData.formatted_address && (
-            <div className="flex items-start gap-3">
-              <MapPin className="w-5 h-5 text-gray-400 mt-0.5 shrink-0" />
+            <div className="flex items-start gap-2.5">
+              <MapPin className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <p className="text-sm font-medium text-gray-900">Address</p>
+                <div className="flex items-center gap-2 mb-0.5">
+                  <p className="text-xs font-medium text-gray-900">Address</p>
                   {distance && (
-                    <span className="flex items-center gap-1 text-xs font-medium text-emerald-600">
-                      <Navigation className="w-3.5 h-3.5" />
+                    <span className="flex items-center gap-0.5 text-xs font-medium text-emerald-600">
+                      <Navigation className="w-3 h-3" />
                       {distance}
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-xs text-gray-600">
                   {googleData.formatted_address}
                 </p>
               </div>
@@ -288,13 +281,15 @@ export const PlaceDetailBottomSheet: React.FC<PlaceDetailBottomSheetProps> = ({
 
           {/* Phone */}
           {googleData.formatted_phone_number && (
-            <div className="flex items-start gap-3">
-              <Phone className="w-5 h-5 text-gray-400 mt-0.5 shrink-0" />
+            <div className="flex items-start gap-2.5">
+              <Phone className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
               <div>
-                <p className="text-sm font-medium text-gray-900 mb-1">Phone</p>
+                <p className="text-xs font-medium text-gray-900 mb-0.5">
+                  Phone
+                </p>
                 <a
                   href={`tel:${googleData.formatted_phone_number}`}
-                  className="text-sm text-emerald-600 hover:text-emerald-700 hover:underline"
+                  className="text-xs text-emerald-600 hover:text-emerald-700 hover:underline"
                 >
                   {googleData.formatted_phone_number}
                 </a>
@@ -304,17 +299,17 @@ export const PlaceDetailBottomSheet: React.FC<PlaceDetailBottomSheetProps> = ({
 
           {/* Website */}
           {googleData.website && (
-            <div className="flex items-start gap-3">
-              <Globe className="w-5 h-5 text-gray-400 mt-0.5 shrink-0" />
+            <div className="flex items-start gap-2.5">
+              <Globe className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
               <div>
-                <p className="text-sm font-medium text-gray-900 mb-1">
+                <p className="text-xs font-medium text-gray-900 mb-0.5">
                   Website
                 </p>
                 <a
                   href={googleData.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-emerald-600 hover:text-emerald-700 hover:underline break-all"
+                  className="text-xs text-emerald-600 hover:text-emerald-700 hover:underline break-all"
                 >
                   {googleData.website}
                 </a>
@@ -325,12 +320,12 @@ export const PlaceDetailBottomSheet: React.FC<PlaceDetailBottomSheetProps> = ({
           {/* Opening Hours */}
           {googleData.opening_hours?.weekday_text && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+              <h3 className="text-sm font-semibold text-gray-900 mb-2">
                 Opening Hours
               </h3>
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 {googleData.opening_hours.weekday_text.map((day, index) => (
-                  <p key={index} className="text-sm text-gray-600">
+                  <p key={index} className="text-xs text-gray-600">
                     {day}
                   </p>
                 ))}
@@ -340,17 +335,17 @@ export const PlaceDetailBottomSheet: React.FC<PlaceDetailBottomSheetProps> = ({
 
           {/* Google Maps Link */}
           {googleData.url && (
-            <div className="flex items-start gap-3">
-              <MapPinned className="w-5 h-5 text-gray-400 mt-0.5 shrink-0" />
+            <div className="flex items-start gap-2.5">
+              <MapPinned className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
               <div>
-                <p className="text-sm font-medium text-gray-900 mb-1">
+                <p className="text-xs font-medium text-gray-900 mb-0.5">
                   View on Google Maps
                 </p>
                 <a
                   href={googleData.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-emerald-600 hover:text-emerald-700 hover:underline inline-flex items-center gap-1"
+                  className="text-xs text-emerald-600 hover:text-emerald-700 hover:underline inline-flex items-center gap-1"
                 >
                   Open in Google Maps
                   <ExternalLink className="w-3 h-3" />
@@ -362,14 +357,14 @@ export const PlaceDetailBottomSheet: React.FC<PlaceDetailBottomSheetProps> = ({
           {/* Place Types */}
           {googleData.types && googleData.types.length > 0 && (
             <div>
-              <h3 className="text-sm font-medium text-gray-900 mb-2">
+              <h3 className="text-xs font-medium text-gray-900 mb-1.5">
                 Categories
               </h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5">
                 {googleData.types.slice(0, 5).map((type, index) => (
                   <span
                     key={index}
-                    className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md"
+                    className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-md"
                   >
                     {type.replace(/_/g, " ")}
                   </span>
@@ -381,30 +376,30 @@ export const PlaceDetailBottomSheet: React.FC<PlaceDetailBottomSheetProps> = ({
           {/* Reviews */}
           {googleData.reviews && googleData.reviews.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+              <h3 className="text-sm font-semibold text-gray-900 mb-2">
                 Recent Reviews
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {googleData.reviews.slice(0, 3).map((review, index) => (
                   <div
                     key={index}
-                    className="border-b border-gray-200 pb-4 last:border-0"
+                    className="border-b border-gray-200 pb-3 last:border-0"
                   >
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm font-medium text-gray-900">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <p className="text-xs font-medium text-gray-900">
                         {review.author_name}
                       </p>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                        <span className="text-sm font-medium text-gray-900">
+                      <div className="flex items-center gap-0.5">
+                        <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                        <span className="text-xs font-medium text-gray-900">
                           {review.rating}
                         </span>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 line-clamp-3">
+                    <p className="text-xs text-gray-600 line-clamp-3">
                       {review.text}
                     </p>
-                    <p className="text-xs text-gray-400 mt-2">
+                    <p className="text-xs text-gray-400 mt-1.5">
                       {new Date(review.time * 1000).toLocaleDateString()}
                     </p>
                   </div>

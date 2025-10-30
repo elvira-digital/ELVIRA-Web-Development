@@ -14,9 +14,9 @@ export const PhotoGalleryHeader: React.FC<PhotoGalleryHeaderProps> = ({
   subtitle = "Discover our beautiful spaces and amenities",
 }) => {
   return (
-    <div className="px-4 mb-4">
+    <div className="px-4 mb-3">
       {/* Title */}
-      <h2 className="text-2xl font-bold text-gray-900 mb-1">
+      <h2 className="text-lg font-bold text-gray-900 mb-0.5">
         Photo <span className="text-blue-600">Gallery</span>
       </h2>
       {/* Subtitle */}

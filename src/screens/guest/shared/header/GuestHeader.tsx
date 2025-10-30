@@ -33,26 +33,26 @@ export const GuestHeader: React.FC<GuestHeaderProps> = ({
   };
 
   return (
-    <header className="bg-white px-4 py-2.5 shadow-sm">
+    <header className="bg-white px-4 py-2 shadow-sm">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <h1 className="text-lg font-semibold text-gray-900">
+          <h1 className="text-base font-semibold text-gray-900">
             Welcome, {guestName}
           </h1>
-          <p className="text-sm text-gray-600">
+          <p className="text-xs text-gray-600">
             {hotelName} • Room {roomNumber}
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <button
-            className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="relative p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
             aria-label="Notifications"
           ></button>
           <button
             onClick={handleDNDToggle}
             disabled={toggleDND.isPending}
-            className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium transition-colors border border-gray-300 ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-colors border border-gray-300 ${
               dndStatus
                 ? "bg-red-50 text-red-600 hover:bg-red-100"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -60,12 +60,12 @@ export const GuestHeader: React.FC<GuestHeaderProps> = ({
           >
             {dndStatus ? (
               <>
-                <BellOff className="w-4 h-4" />
+                <BellOff className="w-3.5 h-3.5" />
                 DND On
               </>
             ) : (
               <>
-                <Bell className="w-4 h-4" />
+                <Bell className="w-3.5 h-3.5" />
                 DND Off
               </>
             )}

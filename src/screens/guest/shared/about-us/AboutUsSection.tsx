@@ -21,7 +21,7 @@ export const AboutUsSection: React.FC<AboutUsSectionProps> = ({
     <section className="bg-gray-900 text-white py-12">
       <div className="max-w-md mx-auto px-6">
         {/* Title */}
-        <h2 className="text-2xl font-bold mb-6 text-center">
+        <h2 className="text-lg font-bold mb-6 text-center">
           About <span className="text-blue-500">Us</span>
         </h2>
 

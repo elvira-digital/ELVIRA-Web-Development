@@ -65,19 +65,19 @@ export const MenuItemDetailBottomSheet: React.FC<
 
   return (
     <GuestBottomSheet isOpen={isOpen} onClose={onClose}>
-      <div className="pb-24">
+      <div className="pb-20">
         {/* Image */}
         {item.image_url ? (
-          <div className="relative w-full h-64 bg-gray-200">
+          <div className="relative w-full h-48 bg-gray-200">
             <img
               src={item.image_url}
               alt={item.name}
               className="w-full h-full object-cover"
             />
             {item.hotel_recommended && (
-              <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-1">
+              <div className="absolute top-3 left-3 bg-red-500 text-white px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1">
                 <svg
-                  className="w-4 h-4 fill-current"
+                  className="w-3 h-3 fill-current"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
@@ -88,31 +88,31 @@ export const MenuItemDetailBottomSheet: React.FC<
             )}
           </div>
         ) : (
-          <div className="w-full h-64 bg-linear-to-br from-emerald-50 to-emerald-100 flex items-center justify-center">
-            <Utensils className="w-16 h-16 text-emerald-300" />
+          <div className="w-full h-48 bg-linear-to-br from-emerald-50 to-emerald-100 flex items-center justify-center">
+            <Utensils className="w-12 h-12 text-emerald-300" />
           </div>
         )}
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="p-4 space-y-4">
           {/* Title & Price */}
           <div>
-            <div className="flex items-start justify-between gap-4 mb-2">
-              <h2 className="text-2xl font-bold text-gray-900">{item.name}</h2>
-              <span className="text-2xl font-bold text-emerald-600">
+            <div className="flex items-start justify-between gap-3 mb-1.5">
+              <h2 className="text-lg font-bold text-gray-900">{item.name}</h2>
+              <span className="text-lg font-bold text-emerald-600">
                 ${item.price.toFixed(2)}
               </span>
             </div>
-            <p className="text-sm text-gray-500">{item.category}</p>
+            <p className="text-xs text-gray-500">{item.category}</p>
           </div>
 
           {/* Service Type & Special Type Tags */}
           {(item.service_type || item.special_type) && (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {item.service_type?.map((type, index) => (
                 <span
                   key={`service-${index}`}
-                  className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full border border-blue-200"
+                  className="px-2.5 py-0.5 bg-blue-50 text-blue-700 text-xs rounded-full border border-blue-200"
                 >
                   {type}
                 </span>
@@ -120,7 +120,7 @@ export const MenuItemDetailBottomSheet: React.FC<
               {item.special_type?.map((type, index) => (
                 <span
                   key={`special-${index}`}
-                  className="px-3 py-1 bg-purple-50 text-purple-700 text-sm rounded-full border border-purple-200"
+                  className="px-2.5 py-0.5 bg-purple-50 text-purple-700 text-xs rounded-full border border-purple-200"
                 >
                   {type}
                 </span>
@@ -131,10 +131,10 @@ export const MenuItemDetailBottomSheet: React.FC<
           {/* Description */}
           {item.description && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-sm font-semibold text-gray-900 mb-1.5">
                 Description
               </h3>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-xs text-gray-700 leading-relaxed">
                 {item.description}
               </p>
             </div>
@@ -142,7 +142,7 @@ export const MenuItemDetailBottomSheet: React.FC<
         </div>
 
         {/* Fixed Bottom Action Button */}
-        <div className="fixed bottom-0 left-0 right-0 p-6 bg-white border-t border-gray-200">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200">
           {quantity > 0 ? (
             <QuantityControl
               quantity={quantity}

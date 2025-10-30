@@ -23,7 +23,7 @@ export const AnnouncementTicker: React.FC<AnnouncementTickerProps> = ({
 
   return (
     <div
-      className={`bg-gray-900 text-white py-2.5 overflow-hidden ${className}`}
+      className={`bg-gray-900 text-white py-1.5 overflow-hidden ${className}`}
     >
       <style>
         {`
@@ -42,10 +42,10 @@ export const AnnouncementTicker: React.FC<AnnouncementTickerProps> = ({
       </style>
       <div className="relative flex">
         <div className="flex ticker-animate">
-          <span className="text-sm font-medium whitespace-nowrap px-4">
+          <span className="text-xs font-medium whitespace-nowrap px-4">
             {allAnnouncements}
           </span>
-          <span className="text-sm font-medium whitespace-nowrap px-4">
+          <span className="text-xs font-medium whitespace-nowrap px-4">
             {allAnnouncements}
           </span>
         </div>

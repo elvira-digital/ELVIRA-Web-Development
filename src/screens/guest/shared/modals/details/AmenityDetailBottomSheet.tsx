@@ -50,19 +50,19 @@ export const AmenityDetailBottomSheet: React.FC<
 
   return (
     <GuestBottomSheet isOpen={isOpen} onClose={onClose}>
-      <div className="pb-24">
+      <div className="pb-20">
         {/* Image */}
         {amenity.image_url ? (
-          <div className="relative w-full h-64 bg-gray-200">
+          <div className="relative w-full h-48 bg-gray-200">
             <img
               src={amenity.image_url}
               alt={amenity.name}
               className="w-full h-full object-cover"
             />
             {amenity.recommended && (
-              <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-1">
+              <div className="absolute top-3 left-3 bg-red-500 text-white px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1">
                 <svg
-                  className="w-4 h-4 fill-current"
+                  className="w-3 h-3 fill-current"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
@@ -73,33 +73,33 @@ export const AmenityDetailBottomSheet: React.FC<
             )}
           </div>
         ) : (
-          <div className="w-full h-64 bg-linear-to-br from-emerald-50 to-emerald-100 flex items-center justify-center">
-            <MapPin className="w-16 h-16 text-emerald-300" />
+          <div className="w-full h-48 bg-linear-to-br from-emerald-50 to-emerald-100 flex items-center justify-center">
+            <MapPin className="w-12 h-12 text-emerald-300" />
           </div>
         )}
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="p-4 space-y-4">
           {/* Title & Price */}
           <div>
-            <div className="flex items-start justify-between gap-4 mb-2">
-              <h2 className="text-2xl font-bold text-gray-900">
+            <div className="flex items-start justify-between gap-3 mb-1.5">
+              <h2 className="text-lg font-bold text-gray-900">
                 {amenity.name}
               </h2>
-              <span className="text-2xl font-bold text-emerald-600">
+              <span className="text-lg font-bold text-emerald-600">
                 ${amenity.price.toFixed(2)}
               </span>
             </div>
-            <p className="text-sm text-gray-500">{amenity.category}</p>
+            <p className="text-xs text-gray-500">{amenity.category}</p>
           </div>
 
           {/* Description */}
           {amenity.description && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-sm font-semibold text-gray-900 mb-1.5">
                 Description
               </h3>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-xs text-gray-700 leading-relaxed">
                 {amenity.description}
               </p>
             </div>
@@ -107,7 +107,7 @@ export const AmenityDetailBottomSheet: React.FC<
         </div>
 
         {/* Fixed Bottom Action Button */}
-        <div className="fixed bottom-0 left-0 right-0 p-6 bg-white border-t border-gray-200">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200">
           <GuestButton
             fullWidth
             size="md"

@@ -33,10 +33,10 @@ export const EmergencyContactsSection: React.FC<
   };
 
   return (
-    <section className="py-6 px-4 bg-white">
-      <div className="mb-4">
+    <section className="py-4 px-4 bg-white">
+      <div className="mb-3">
         {/* Title */}
-        <h2 className="text-2xl font-bold text-gray-900 mb-1">
+        <h2 className="text-lg font-bold text-gray-900 mb-0.5">
           Emergency <span className="text-blue-600">Contacts</span>
         </h2>
         {/* Subtitle */}
@@ -49,15 +49,15 @@ export const EmergencyContactsSection: React.FC<
           {contacts.map((contact) => (
             <div
               key={contact.id}
-              className="flex items-center justify-between py-4 px-4 bg-white hover:bg-gray-50 transition-colors duration-200"
+              className="flex items-center justify-between py-3 px-3 bg-white hover:bg-gray-50 transition-colors duration-200"
             >
               {/* Contact Name */}
-              <h3 className="text-base font-semibold text-gray-900">
+              <h3 className="text-sm font-semibold text-gray-900">
                 {contact.contact_name}
               </h3>
 
               {/* Phone Number with Call Button */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => handleCall(contact.phone_number)}
                   className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors duration-200"
@@ -69,7 +69,7 @@ export const EmergencyContactsSection: React.FC<
                   className="text-blue-600 hover:text-blue-700 transition-colors duration-200"
                   aria-label={`Call ${contact.contact_name}`}
                 >
-                  <Phone size={18} />
+                  <Phone size={16} />
                 </button>
               </div>
             </div>

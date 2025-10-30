@@ -47,7 +47,7 @@ export const CategoryMenu = ({ onCategoryChange }: CategoryMenuProps) => {
   };
 
   return (
-    <div className="mt-2 mb-2 -mx-4">
+    <div className="mt-2 mb-2">
       {/* Grid container - 3 equal columns */}
       <div className="grid grid-cols-3 bg-white border-b border-gray-200">
         {categories.map((category) => {

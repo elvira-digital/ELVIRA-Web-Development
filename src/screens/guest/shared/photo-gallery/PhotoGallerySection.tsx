@@ -71,7 +71,7 @@ export const PhotoGallerySection: React.FC<PhotoGallerySectionProps> = ({
 
   return (
     <>
-      <section className="py-8 bg-gray-50">
+      <section className="py-4 bg-gray-50">
         <PhotoGalleryHeader subtitle={subtitle} />
         <PhotoGalleryCarousel
           images={images}

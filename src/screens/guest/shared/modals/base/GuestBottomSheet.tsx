@@ -65,22 +65,22 @@ export const GuestBottomSheet: React.FC<GuestBottomSheetProps> = ({
         className="fixed inset-x-0 bottom-0 z-[9999] animate-slide-up"
         style={{ maxHeight }}
       >
-        <div className="bg-white rounded-t-[2rem] shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-t-[1.5rem] shadow-2xl overflow-hidden">
           {/* Handle Bar */}
-          <div className="flex justify-center pt-3 pb-2">
-            <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+          <div className="flex justify-center pt-2 pb-1.5">
+            <div className="w-10 h-1 bg-gray-300 rounded-full" />
           </div>
 
           {/* Header */}
           {title && (
-            <div className="flex items-center justify-between px-6 py-1 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
+            <div className="flex items-center justify-between px-4 py-1.5 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
                 aria-label="Close"
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className="w-4 h-4 text-gray-500" />
               </button>
             </div>
           )}
@@ -90,8 +90,8 @@ export const GuestBottomSheet: React.FC<GuestBottomSheetProps> = ({
             className="overflow-y-auto"
             style={{
               maxHeight: title
-                ? `calc(${maxHeight} - 120px)`
-                : `calc(${maxHeight} - 60px)`,
+                ? `calc(${maxHeight} - 100px)`
+                : `calc(${maxHeight} - 50px)`,
             }}
           >
             {children}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { GuestHeader } from "../header";
 import { GuestBottomNav } from "../navigation";
 import { AnnouncementTicker } from "../announcements";
@@ -40,6 +40,10 @@ export const GuestPageLayout: React.FC<GuestPageLayoutProps> = ({
   requestCount = 0,
   hotelId,
 }) => {
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  const scrollContainerRef = useRef<HTMLElement>(null);
+
   // Fetch guest's conversation
   const { data: conversation } = useGuestConversation(guestId, hotelId);
 
@@ -60,10 +64,50 @@ export const GuestPageLayout: React.FC<GuestPageLayoutProps> = ({
       message: `${a.title} • ${a.description}`,
     }));
 
+  // Handle scroll to hide/show header
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!scrollContainerRef.current) return;
+
+      const currentScrollY = scrollContainerRef.current.scrollTop;
+      const scrollDifference = currentScrollY - lastScrollY.current;
+
+      // Only hide/show if scrolled more than 10px to avoid jitter
+      if (Math.abs(scrollDifference) > 10) {
+        if (scrollDifference > 0 && currentScrollY > 100) {
+          // Scrolling down & past 100px - hide header
+          setIsHeaderVisible(false);
+        } else if (scrollDifference < 0) {
+          // Scrolling up - show header
+          setIsHeaderVisible(true);
+        }
+
+        lastScrollY.current = currentScrollY;
+      }
+    };
+
+    const scrollContainer = scrollContainerRef.current;
+    if (scrollContainer) {
+      scrollContainer.addEventListener("scroll", handleScroll, {
+        passive: true,
+      });
+    }
+
+    return () => {
+      if (scrollContainer) {
+        scrollContainer.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
+
   return (
     <div className="fixed inset-0 flex flex-col bg-gray-50">
       {/* Fixed Header Section (Header + Ticker + Optional Search/Filter) */}
-      <div className="shrink-0 z-40 bg-white shadow-sm">
+      <div
+        className={`shrink-0 z-40 bg-white shadow-sm transition-transform duration-300 ${
+          isHeaderVisible ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
         {/* Header */}
         <GuestHeader
           guestName={guestName}
@@ -83,7 +127,9 @@ export const GuestPageLayout: React.FC<GuestPageLayoutProps> = ({
       </div>
 
       {/* Main Content - Scrollable area with padding for fixed bottom nav */}
-      <main className="flex-1 overflow-y-auto pb-16">{children}</main>
+      <main ref={scrollContainerRef} className="flex-1 overflow-y-auto pb-16">
+        {children}
+      </main>
 
       {/* Floating Widget Menu - Bell with Clock and Message buttons */}
       <FloatingWidgetMenu
