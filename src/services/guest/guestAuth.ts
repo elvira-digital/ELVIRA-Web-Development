@@ -43,11 +43,15 @@ export function saveGuestSession(
   guestData: any,
   hotelData: any
 ): void {
+  const now = new Date();
+  const sessionExpiresAt = new Date(now.getTime() + 40 * 60 * 1000); // 40 minutes from now
+  
   const session = {
     token,
     guestData,
     hotelData,
-    timestamp: new Date().toISOString(),
+    timestamp: now.toISOString(),
+    sessionExpiresAt: sessionExpiresAt.toISOString(), // Frontend session timeout (40 min security limit)
   };
   localStorage.setItem("guestSession", JSON.stringify(session));
 }
@@ -58,10 +62,22 @@ export function getGuestSession() {
 
   try {
     const session = JSON.parse(sessionStr);
+    const now = new Date();
 
-    // Check if session has expired
+    // Check if 40-minute frontend session has expired
+    if (session.sessionExpiresAt) {
+      const sessionExpiry = new Date(session.sessionExpiresAt);
+      if (sessionExpiry < now) {
+        console.log("⏰ Guest session expired (40 minutes timeout)");
+        clearGuestSession();
+        return null;
+      }
+    }
+
+    // Check if database access code has expired
     const expiresAt = new Date(session.guestData.access_code_expires_at);
-    if (expiresAt < new Date()) {
+    if (expiresAt < now) {
+      console.log("⏰ Guest access code expired");
       clearGuestSession();
       return null;
     }

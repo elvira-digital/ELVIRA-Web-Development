@@ -42,6 +42,28 @@ export function GuestAuthProvider({ children }: { children: ReactNode }) {
     setLoading(false);
   }, []);
 
+  // Auto-logout timer - check session expiry every minute
+  useEffect(() => {
+    if (!guestSession) return;
+
+    const checkSessionExpiry = () => {
+      const session = getGuestSession();
+      if (!session) {
+        // Session expired, log out
+        console.log("⏰ Session expired, logging out...");
+        setGuestSession(null);
+      }
+    };
+
+    // Check immediately
+    checkSessionExpiry();
+
+    // Then check every minute
+    const intervalId = setInterval(checkSessionExpiry, 60 * 1000);
+
+    return () => clearInterval(intervalId);
+  }, [guestSession]);
+
   // Set up realtime subscription for guest data updates
   useEffect(() => {
     if (!guestSession?.guestData?.id) {
