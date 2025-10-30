@@ -102,9 +102,9 @@ export const GuestPageLayout: React.FC<GuestPageLayoutProps> = ({
 
   return (
     <div className="fixed inset-0 flex flex-col bg-gray-50">
-      {/* Fixed Header Section (Header + Ticker + Optional Search/Filter) */}
+      {/* Fixed Header Section (Header + Ticker + Optional Search/Filter) - Fixed position */}
       <div
-        className={`shrink-0 z-40 bg-white shadow-sm transition-transform duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-40 bg-white shadow-sm transition-transform duration-300 ${
           isHeaderVisible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
@@ -124,6 +124,23 @@ export const GuestPageLayout: React.FC<GuestPageLayoutProps> = ({
 
         {/* Optional Header Slot (e.g., Search Bar) */}
         {headerSlot}
+      </div>
+
+      {/* Spacer for header height when visible */}
+      <div className={`shrink-0 transition-all duration-300 ${isHeaderVisible ? 'h-auto' : 'h-0'}`}>
+        <div className="invisible">
+          <GuestHeader
+            guestName={guestName}
+            hotelName={hotelName}
+            roomNumber={roomNumber}
+            guestId={guestId}
+            dndStatus={dndStatus}
+          />
+          {activeAnnouncements.length > 0 && (
+            <AnnouncementTicker announcements={activeAnnouncements} />
+          )}
+          {headerSlot}
+        </div>
       </div>
 
       {/* Main Content - Scrollable area with padding for fixed bottom nav */}
