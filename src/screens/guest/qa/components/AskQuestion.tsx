@@ -6,8 +6,9 @@
  */
 
 import React, { useState } from "react";
-import { Send, ArrowLeft, X } from "lucide-react";
+import { Send } from "lucide-react";
 import { getGuestSupabaseClient } from "../../../../services/guestSupabase";
+import { SearchFilterBar } from "../../shared/search-filter";
 
 interface AskQuestionProps {
   hotelId: string;
@@ -67,54 +68,26 @@ export const AskQuestion: React.FC<AskQuestionProps> = ({
   return (
     <div className="bg-white">
       {/* Search Filter Bar with Ask Button */}
-      <div className="px-4 py-2.5 bg-white">
-        <div className="flex items-center">
-          {/* Search Box */}
-          <div className="flex-1 relative flex items-center gap-2.5 bg-gray-100 rounded-full px-4 py-2.5">
-            {/* Back Button */}
-            <button
-              onClick={onBackClick}
-              className="shrink-0 p-0 hover:opacity-70 transition-opacity"
-              aria-label="Go back"
-            >
-              <ArrowLeft className="text-gray-700" size={20} />
-            </button>
-
-            <input
-              type="text"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              placeholder="Type your question here..."
-              className="flex-1 bg-transparent border-none focus:outline-none text-base placeholder:text-gray-500 font-normal"
-            />
-
-            {/* Clear Button - shows when there's text */}
-            {question && (
-              <button
-                onClick={() => setQuestion("")}
-                className="shrink-0 p-0 hover:opacity-70 transition-opacity"
-                aria-label="Clear search"
-              >
-                <X className="text-gray-500" size={20} />
-              </button>
+      <SearchFilterBar
+        searchValue={question}
+        onSearchChange={setQuestion}
+        placeholder="Type your question here..."
+        onBackClick={onBackClick}
+        rightIcon={
+          <button
+            onClick={handleAsk}
+            disabled={isLoading || !question.trim()}
+            className="shrink-0 p-0 hover:opacity-70 transition-opacity disabled:opacity-50"
+            aria-label="Ask question"
+          >
+            {isLoading ? (
+              <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Send className="text-gray-700" size={18} />
             )}
-
-            {/* Ask Button - Send icon, styled like go-back */}
-            <button
-              onClick={handleAsk}
-              disabled={isLoading || !question.trim()}
-              className="shrink-0 p-0 hover:opacity-70 transition-opacity"
-              aria-label="Ask question"
-            >
-              {isLoading ? (
-                <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Send className="text-gray-700" size={20} />
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
+          </button>
+        }
+      />
 
       {/* Error */}
       {error && (

@@ -53,6 +53,14 @@ export function GuestAuth({ onBackToStaffLogin }: GuestAuthProps) {
 
   return (
     <AuthContainer>
+      {/* Welcome Message - Mobile Only */}
+      <div className="text-center mb-5 sm:hidden">
+        <h2 className="text-lg font-semibold text-gray-900 mb-1">
+          Welcome to your experience
+        </h2>
+        <p className="text-xs text-gray-500">Please enter your details</p>
+      </div>
+
       <AuthHeader
         icon={
           <svg

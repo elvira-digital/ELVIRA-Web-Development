@@ -33,7 +33,7 @@ export function AuthPasswordInput({
     <div>
       <label
         htmlFor={id}
-        className="block text-xs font-medium text-gray-700 mb-2 uppercase tracking-wider"
+        className="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wider"
       >
         {label}
       </label>
@@ -44,7 +44,7 @@ export function AuthPasswordInput({
           type={showPassword ? "text" : "password"}
           autoComplete={autoComplete}
           required={required}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors text-base pr-12"
+          className="w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-full shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors text-sm sm:text-base pr-10 sm:pr-12"
           placeholder={placeholder}
           value={value}
           onChange={onChange}
@@ -60,7 +60,7 @@ export function AuthPasswordInput({
         >
           {showPassword ? (
             <svg
-              className="h-5 w-5"
+              className="h-4 w-4 sm:h-5 sm:w-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -74,7 +74,7 @@ export function AuthPasswordInput({
             </svg>
           ) : (
             <svg
-              className="h-5 w-5"
+              className="h-4 w-4 sm:h-5 sm:w-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -95,7 +95,9 @@ export function AuthPasswordInput({
           )}
         </button>
       </div>
-      {helperText && <p className="mt-2 text-xs text-gray-500">{helperText}</p>}
+      {helperText && (
+        <p className="mt-1.5 text-xs text-gray-500">{helperText}</p>
+      )}
     </div>
   );
 }

@@ -6,7 +6,7 @@
  * Can be used across multiple guest pages
  */
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
 interface GuestBottomSheetProps {
@@ -24,6 +24,24 @@ export const GuestBottomSheet: React.FC<GuestBottomSheetProps> = ({
   children,
   maxHeight = "90vh",
 }) => {
+  const [isClosing, setIsClosing] = useState(false);
+  const [shouldRender, setShouldRender] = useState(isOpen);
+
+  // Handle opening and closing animations
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRender(true);
+      setIsClosing(false);
+    } else if (shouldRender) {
+      setIsClosing(true);
+      const timer = setTimeout(() => {
+        setShouldRender(false);
+        setIsClosing(false);
+      }, 300); // Match animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, shouldRender]);
+
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -49,20 +67,24 @@ export const GuestBottomSheet: React.FC<GuestBottomSheetProps> = ({
     return () => document.removeEventListener("keydown", handleEscape);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!shouldRender) return null;
 
   return (
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9998] transition-opacity duration-300"
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[9998] transition-opacity duration-300 ${
+          isClosing ? "opacity-0" : "opacity-100"
+        }`}
         onClick={onClose}
         aria-hidden="true"
       />
 
       {/* Bottom Sheet */}
       <div
-        className="fixed inset-x-0 bottom-0 z-[9999] animate-slide-up"
+        className={`fixed inset-x-0 bottom-0 z-[9999] ${
+          isClosing ? "animate-slide-down" : "animate-slide-up"
+        }`}
         style={{ maxHeight }}
       >
         <div className="bg-white rounded-t-[1.5rem] shadow-2xl overflow-hidden">

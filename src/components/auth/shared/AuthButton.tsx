@@ -13,7 +13,7 @@ export function AuthButton({
     <button
       type="submit"
       disabled={loading}
-      className="w-full flex items-center justify-center py-2.5 sm:py-3.5 px-4 border border-transparent text-sm sm:text-base font-medium rounded-lg text-white bg-emerald-500 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+      className="w-full flex items-center justify-center py-2.5 sm:py-3.5 px-4 border border-transparent text-sm sm:text-base font-medium rounded-full text-white bg-emerald-500 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
     >
       {loading ? (
         <>

@@ -5,8 +5,8 @@ interface AuthCardProps {
 
 export function AuthCard({ children, onSubmit }: AuthCardProps) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-8">
-      <form onSubmit={onSubmit} className="space-y-4 sm:space-y-6">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 sm:p-8">
+      <form onSubmit={onSubmit} className="space-y-3.5 sm:space-y-6">
         {children}
       </form>
     </div>
