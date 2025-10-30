@@ -139,6 +139,51 @@ export async function createShopOrder(
     }
 
     console.log("✅ Order items created successfully");
+
+    // Reduce stock quantity for each product (if not unlimited stock)
+    console.log("📦 Reducing stock quantities...");
+    for (const item of data.items) {
+      // Fetch current product to check if it has limited stock
+      const { data: product, error: productError } = await supabase
+        .from("products")
+        .select("stock_quantity, is_unlimited_stock")
+        .eq("id", item.productId)
+        .single();
+
+      if (productError) {
+        console.warn(
+          `⚠️ Could not fetch product ${item.productId}:`,
+          productError
+        );
+        continue;
+      }
+
+      // Only reduce stock if it's not unlimited
+      if (
+        !product.is_unlimited_stock &&
+        product.stock_quantity !== null &&
+        product.stock_quantity > 0
+      ) {
+        const newQuantity = Math.max(0, product.stock_quantity - item.quantity);
+
+        const { error: updateError } = await supabase
+          .from("products")
+          .update({ stock_quantity: newQuantity })
+          .eq("id", item.productId);
+
+        if (updateError) {
+          console.error(
+            `❌ Error updating stock for product ${item.productId}:`,
+            updateError
+          );
+        } else {
+          console.log(
+            `✅ Stock reduced for product ${item.productId}: ${product.stock_quantity} → ${newQuantity}`
+          );
+        }
+      }
+    }
+
     console.log("=== END DEBUG ===");
 
     return { success: true };
