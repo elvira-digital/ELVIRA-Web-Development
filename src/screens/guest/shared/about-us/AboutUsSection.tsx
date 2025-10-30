@@ -5,6 +5,7 @@
  */
 
 import React from "react";
+import { GuestButton } from "../../../../components/guest/shared/buttons/GuestButton";
 
 interface AboutUsSectionProps {
   aboutText: string;
@@ -21,25 +22,27 @@ export const AboutUsSection: React.FC<AboutUsSectionProps> = ({
     <section className="bg-gray-900 text-white py-12">
       <div className="max-w-md mx-auto px-6">
         {/* Title */}
-        <h2 className="text-lg font-bold mb-6 text-center">
+        <h2 className="text-base sm:text-lg font-bold mb-6 text-center">
           About <span className="text-blue-500">Us</span>
         </h2>
 
         {/* About Text - White Box */}
         <div className="bg-white rounded-2xl p-6 mb-6">
-          <p className="text-gray-700 text-sm leading-relaxed text-center">
+          <p className="text-gray-700 text-xs sm:text-sm leading-relaxed text-center">
             {aboutText}
           </p>
         </div>
 
         {/* Booking Button */}
-        <div className="text-center">
-          <button
+        <div className="flex justify-center">
+          <GuestButton
             onClick={onButtonClick}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 shadow-lg"
+            size="md"
+            variant="primary"
+            className="!bg-blue-500 hover:!bg-blue-600 active:!bg-blue-700"
           >
             {buttonText}
-          </button>
+          </GuestButton>
         </div>
       </div>
     </section>

@@ -210,7 +210,7 @@ export const RestaurantCartBottomSheet: React.FC<
         {/* Cart Summary Header */}
         {restaurantCart.length > 0 && (
           <div className="mb-4 pb-3 border-b border-gray-200">
-            <p className="text-sm text-gray-600">
+            <p className="text-xs sm:text-sm text-gray-600">
               {totalItems} item{totalItems !== 1 ? "s" : ""} • $
               {totalPrice.toFixed(2)} total
             </p>
@@ -223,10 +223,10 @@ export const RestaurantCartBottomSheet: React.FC<
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <ShoppingCart className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
               Your cart is empty
             </h3>
-            <p className="text-gray-500">
+            <p className="text-xs sm:text-sm text-gray-500">
               Browse our menu and add items to get started!
             </p>
           </div>
@@ -266,10 +266,10 @@ export const RestaurantCartBottomSheet: React.FC<
               <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-3">
                 <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-amber-900">
+                  <p className="text-xs sm:text-sm font-medium text-amber-900">
                     Service Type Notice
                   </p>
-                  <p className="text-sm text-amber-700 mt-1">
+                  <p className="text-xs sm:text-sm text-amber-700 mt-1">
                     Some items in your cart support both service types, while
                     others are limited to <strong>{selectedServiceType}</strong>{" "}
                     only. Your order will proceed as{" "}

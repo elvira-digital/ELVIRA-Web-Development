@@ -76,10 +76,10 @@ export const GuestTours: React.FC<GuestToursProps> = ({ onNavigate }) => {
                 />
               </svg>
               <div>
-                <h3 className="text-sm font-medium text-yellow-800 mb-1">
+                <h3 className="text-xs sm:text-sm font-medium text-yellow-800 mb-1">
                   Map View Unavailable
                 </h3>
-                <p className="text-sm text-yellow-700">
+                <p className="text-xs sm:text-sm text-yellow-700">
                   Hotel location coordinates are not available in your current
                   session. Please log out and log back in to refresh your
                   session data.
@@ -152,10 +152,10 @@ export const GuestTours: React.FC<GuestToursProps> = ({ onNavigate }) => {
         <>
           {/* Title Section */}
           <div className="px-4 pt-4 pb-2">
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900">
               Best Local Tours & Activities
             </h2>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-xs sm:text-sm text-gray-600 mt-1">
               Explore the area with these exciting tours and experiences
             </p>
           </div>

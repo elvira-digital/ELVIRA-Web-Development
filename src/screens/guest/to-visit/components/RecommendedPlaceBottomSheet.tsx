@@ -241,28 +241,30 @@ export const RecommendedPlaceBottomSheet: React.FC<
           <div className="p-6 space-y-6">
             {/* Title */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
                 {place.place_name}
               </h2>
             </div>
-                  {/* Description */}
-                  {place.description && (
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                        About this place
-                      </h3>
-                      <p className="text-sm text-gray-600 leading-relaxed">
-                        {place.description}
-                      </p>
-                    </div>
-                  )}
+            {/* Description */}
+            {place.description && (
+              <div>
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2">
+                  About this place
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                  {place.description}
+                </p>
+              </div>
+            )}
 
             {/* Address with Google Maps Link */}
             <div className="flex items-start gap-3">
               <MapPin className="w-5 h-5 text-gray-400 mt-0.5 shrink-0" />
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <p className="text-sm font-medium text-gray-900">Address</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-900">
+                    Address
+                  </p>
                   {distance && (
                     <span className="flex items-center gap-1 text-xs font-medium text-blue-600">
                       <Navigation className="w-3.5 h-3.5" />
@@ -275,16 +277,17 @@ export const RecommendedPlaceBottomSheet: React.FC<
                     href={googleMapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-emerald-600 hover:text-emerald-700 hover:underline"
+                    className="text-xs sm:text-sm text-emerald-600 hover:text-emerald-700 hover:underline"
                   >
                     {place.address}
                   </a>
                 ) : (
-                  <p className="text-sm text-gray-600">{place.address}</p>
+                  <p className="text-xs sm:text-sm text-gray-600">
+                    {place.address}
+                  </p>
                 )}
               </div>
             </div>
-
           </div>
         </div>
       </GuestBottomSheet>

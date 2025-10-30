@@ -191,7 +191,7 @@ export const RestaurantCheckoutForm: React.FC<RestaurantCheckoutFormProps> = ({
         {/* Selected Restaurant Display (for Restaurant service type) */}
         {isRestaurant && restaurantName && (
           <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-4">
-            <p className="text-sm font-semibold text-emerald-900">
+            <p className="text-xs sm:text-sm font-semibold text-emerald-900">
               Restaurant: {restaurantName}
             </p>
           </div>

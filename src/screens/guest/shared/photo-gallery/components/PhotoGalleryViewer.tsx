@@ -71,10 +71,10 @@ export const PhotoGalleryViewer: React.FC<PhotoGalleryViewerProps> = ({
       {/* Close Button */}
       <button
         onClick={onClose}
-        className="absolute p-3 rounded-full text-white transition-all duration-200"
+        className="absolute p-1.5 sm:p-2.5 rounded-full text-white transition-all duration-200"
         style={{
-          top: "24px",
-          right: "24px",
+          top: "12px",
+          right: "12px",
           zIndex: 10000,
           backgroundColor: "rgba(255, 255, 255, 0.25)",
           border: "2px solid rgba(255, 255, 255, 0.5)",
@@ -87,15 +87,15 @@ export const PhotoGalleryViewer: React.FC<PhotoGalleryViewerProps> = ({
         }
         aria-label="Close gallery"
       >
-        <X size={28} />
+        <X size={20} className="sm:w-6 sm:h-6" />
       </button>
 
       {/* Image Counter */}
       <div
-        className="absolute text-white text-base font-semibold px-4 py-2 rounded-full"
+        className="absolute text-white text-xs sm:text-sm font-semibold px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full"
         style={{
-          top: "24px",
-          left: "24px",
+          top: "12px",
+          left: "12px",
           zIndex: 10000,
           backgroundColor: "rgba(0, 0, 0, 0.6)",
         }}
@@ -107,9 +107,9 @@ export const PhotoGalleryViewer: React.FC<PhotoGalleryViewerProps> = ({
       {images.length > 1 && (
         <button
           onClick={handlePrevious}
-          className="absolute p-4 rounded-full text-white transition-all duration-200"
+          className="absolute p-1.5 sm:p-3 rounded-full text-white transition-all duration-200"
           style={{
-            left: "24px",
+            left: "10px",
             top: "50%",
             transform: "translateY(-50%)",
             zIndex: 10000,
@@ -126,7 +126,7 @@ export const PhotoGalleryViewer: React.FC<PhotoGalleryViewerProps> = ({
           }
           aria-label="Previous image"
         >
-          <ChevronLeft size={32} />
+          <ChevronLeft size={22} className="sm:w-7 sm:h-7" />
         </button>
       )}
 
@@ -148,9 +148,9 @@ export const PhotoGalleryViewer: React.FC<PhotoGalleryViewerProps> = ({
       {images.length > 1 && (
         <button
           onClick={handleNext}
-          className="absolute p-4 rounded-full text-white transition-all duration-200"
+          className="absolute p-1.5 sm:p-3 rounded-full text-white transition-all duration-200"
           style={{
-            right: "24px",
+            right: "10px",
             top: "50%",
             transform: "translateY(-50%)",
             zIndex: 10000,
@@ -167,7 +167,7 @@ export const PhotoGalleryViewer: React.FC<PhotoGalleryViewerProps> = ({
           }
           aria-label="Next image"
         >
-          <ChevronRight size={32} />
+          <ChevronRight size={22} className="sm:w-7 sm:h-7" />
         </button>
       )}
 
@@ -175,14 +175,14 @@ export const PhotoGalleryViewer: React.FC<PhotoGalleryViewerProps> = ({
       {images.length > 1 && (
         <div
           className="absolute left-0 right-0 flex justify-center"
-          style={{ bottom: "24px", zIndex: 10000 }}
+          style={{ bottom: "16px", zIndex: 10000 }}
         >
-          <div className="flex gap-2 px-4 overflow-x-auto max-w-full scrollbar-hide pb-2">
+          <div className="flex gap-1.5 sm:gap-2 px-3 sm:px-4 overflow-x-auto max-w-full scrollbar-hide pb-2">
             {images.map((image, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                className={`shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
                   currentIndex === index
                     ? "border-blue-500 scale-110"
                     : "border-white border-opacity-30 hover:border-opacity-60"

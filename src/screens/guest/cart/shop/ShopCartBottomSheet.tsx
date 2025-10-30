@@ -111,7 +111,7 @@ export const ShopCartBottomSheet: React.FC<ShopCartBottomSheetProps> = ({
         {/* Cart Summary Header */}
         {shopCart.length > 0 && (
           <div className="mb-4 pb-3 border-b border-gray-200">
-            <p className="text-sm text-gray-600">
+            <p className="text-xs sm:text-sm text-gray-600">
               {totalItems} item{totalItems !== 1 ? "s" : ""} • $
               {totalPrice.toFixed(2)} total
             </p>
@@ -124,10 +124,10 @@ export const ShopCartBottomSheet: React.FC<ShopCartBottomSheetProps> = ({
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <ShoppingCart className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
               Your cart is empty
             </h3>
-            <p className="text-gray-500">
+            <p className="text-xs sm:text-sm text-gray-500">
               Browse our shop and add products to get started!
             </p>
           </div>

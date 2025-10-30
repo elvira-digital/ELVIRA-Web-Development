@@ -219,7 +219,7 @@ export const RequestHistoryBottomSheet: React.FC<
       <div className="px-6 pb-6">
         {/* Summary Header */}
         <div className="mb-4 pb-3 border-b border-gray-200">
-          <p className="text-sm text-gray-600">
+          <p className="text-xs sm:text-sm text-gray-600">
             {totalOrders} order{totalOrders !== 1 ? "s" : ""} • $
             {totalSpent.toFixed(2)} total
           </p>
@@ -229,7 +229,7 @@ export const RequestHistoryBottomSheet: React.FC<
         {isLoading && (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
-            <p className="text-gray-500 mt-4">
+            <p className="text-xs sm:text-sm text-gray-500 mt-4">
               Loading your request history...
             </p>
           </div>
@@ -241,10 +241,10 @@ export const RequestHistoryBottomSheet: React.FC<
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Package className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
               No Orders Yet
             </h3>
-            <p className="text-gray-500">
+            <p className="text-xs sm:text-sm text-gray-500">
               Your order history will appear here once you make your first
               request.
             </p>
@@ -258,7 +258,7 @@ export const RequestHistoryBottomSheet: React.FC<
               <div key={group.date}>
                 {/* Date Header */}
                 <div className="mb-3">
-                  <h3 className="text-sm font-semibold text-gray-900">
+                  <h3 className="text-xs sm:text-sm font-semibold text-gray-900">
                     {group.date}
                   </h3>
                 </div>

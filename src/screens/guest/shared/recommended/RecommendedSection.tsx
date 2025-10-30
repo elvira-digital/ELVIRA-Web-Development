@@ -83,10 +83,12 @@ export const RecommendedSection: React.FC<RecommendedSectionProps> = ({
     <section className="py-4">
       {/* Header */}
       <div className="px-4 mb-3">
-        <h2 className="text-lg font-bold text-gray-900">
+        <h2 className="text-base sm:text-lg font-bold text-gray-900">
           {title} <span className="text-blue-600 font-bold">for You</span>
         </h2>
-        {subtitle && <p className="text-sm text-gray-600 mt-1">{subtitle}</p>}
+        {subtitle && (
+          <p className="text-xs sm:text-sm text-gray-600 mt-1">{subtitle}</p>
+        )}
       </div>
 
       {/* Horizontal Scrollable Cards */}

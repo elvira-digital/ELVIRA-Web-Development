@@ -43,9 +43,9 @@ export const GuestButton: React.FC<GuestButtonProps> = ({
 
   // Size styles
   const sizeStyles = {
-    sm: "py-2 px-4 text-sm rounded-full",
-    md: "py-2.5 px-6 text-base rounded-full",
-    lg: "py-3 px-8 text-lg rounded-full",
+    sm: "py-1.5 px-3 text-xs sm:py-2 sm:px-4 sm:text-sm rounded-full",
+    md: "py-2 px-4 text-sm sm:py-2.5 sm:px-6 sm:text-base rounded-full",
+    lg: "py-2.5 px-6 text-base sm:py-3 sm:px-8 sm:text-lg rounded-full",
   };
 
   // Width styles

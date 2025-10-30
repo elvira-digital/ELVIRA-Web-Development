@@ -64,8 +64,10 @@ const RequestCard: React.FC<{
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-gray-900 text-base">{title}</h4>
-          <p className="text-sm text-gray-600">{subtitle}</p>
+          <h4 className="font-semibold text-gray-900 text-sm sm:text-base">
+            {title}
+          </h4>
+          <p className="text-xs sm:text-sm text-gray-600">{subtitle}</p>
         </div>
         <div className="flex items-center gap-2 ml-2">
           <span
@@ -88,7 +90,7 @@ const RequestCard: React.FC<{
         <div className="mt-3">
           {/* Delivery Info */}
           {deliveryInfo && (
-            <div className="flex items-center gap-1 text-sm text-gray-600 mb-3">
+            <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 mb-3">
               <Clock className="w-4 h-4" />
               <span>{deliveryInfo}</span>
             </div>
@@ -99,7 +101,7 @@ const RequestCard: React.FC<{
             {items.map((item, idx) => (
               <div
                 key={idx}
-                className="flex justify-between items-center text-sm"
+                className="flex justify-between items-center text-xs sm:text-sm"
               >
                 <span className="text-gray-700">
                   {item.quantity && item.quantity > 1 && (
@@ -123,8 +125,10 @@ const RequestCard: React.FC<{
 
           {/* Total */}
           <div className="flex justify-between items-center pt-3 border-t border-gray-100">
-            <span className="text-sm font-medium text-gray-700">Total:</span>
-            <span className="text-lg font-bold text-purple-600">
+            <span className="text-xs sm:text-sm font-medium text-gray-700">
+              Total:
+            </span>
+            <span className="text-base sm:text-lg font-bold text-purple-600">
               ${total.toFixed(2)}
             </span>
           </div>

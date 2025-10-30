@@ -29,16 +29,16 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   };
 
   return (
-    <div className="flex gap-2 px-4 py-2.5 bg-white">
+    <div className="flex gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-white">
       {/* Search Box */}
-      <div className="flex-1 relative flex items-center gap-2.5 bg-gray-100 rounded-full px-4 py-2.5">
+      <div className="flex-1 relative flex items-center gap-2 sm:gap-2.5 bg-gray-100 rounded-full px-3 py-2 sm:px-4 sm:py-2.5">
         {/* Back Button */}
         <button
           onClick={onBackClick}
           className="shrink-0 p-0 hover:opacity-70 transition-opacity"
           aria-label="Go back"
         >
-          <ArrowLeft className="text-gray-700" size={20} />
+          <ArrowLeft className="text-gray-700" size={18} />
         </button>
 
         <input
@@ -46,7 +46,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           value={searchValue}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder={placeholder}
-          className="flex-1 bg-transparent border-none focus:outline-none text-base placeholder:text-gray-500 font-normal"
+          className="flex-1 bg-transparent border-none focus:outline-none text-sm sm:text-base placeholder:text-gray-500 font-normal"
         />
 
         {/* Right Icon (if provided) - Inside search container */}
@@ -59,7 +59,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
             className="shrink-0 p-0 hover:opacity-70 transition-opacity"
             aria-label="Clear search"
           >
-            <X className="text-gray-500" size={20} />
+            <X className="text-gray-500" size={18} />
           </button>
         )}
       </div>

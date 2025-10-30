@@ -130,7 +130,7 @@ export const AmenityCartBottomSheet: React.FC<AmenityCartBottomSheetProps> = ({
         {/* Cart Summary Header */}
         {amenityCart.length > 0 && (
           <div className="mb-4 pb-3 border-b border-gray-200">
-            <p className="text-sm text-gray-600">
+            <p className="text-xs sm:text-sm text-gray-600">
               {amenityCart.length} item{amenityCart.length !== 1 ? "s" : ""} • $
               {totalPrice.toFixed(2)} total
             </p>
@@ -148,10 +148,10 @@ export const AmenityCartBottomSheet: React.FC<AmenityCartBottomSheetProps> = ({
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <ShoppingCart className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
               No amenities selected
             </h3>
-            <p className="text-gray-500">
+            <p className="text-xs sm:text-sm text-gray-500">
               Browse amenities and add items to get started!
             </p>
           </div>

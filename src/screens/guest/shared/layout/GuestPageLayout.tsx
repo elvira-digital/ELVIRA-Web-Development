@@ -127,7 +127,11 @@ export const GuestPageLayout: React.FC<GuestPageLayoutProps> = ({
       </div>
 
       {/* Spacer for header height when visible */}
-      <div className={`shrink-0 transition-all duration-300 ${isHeaderVisible ? 'h-auto' : 'h-0'}`}>
+      <div
+        className={`shrink-0 transition-all duration-300 ${
+          isHeaderVisible ? "h-auto" : "h-0"
+        }`}
+      >
         <div className="invisible">
           <GuestHeader
             guestName={guestName}

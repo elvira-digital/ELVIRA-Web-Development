@@ -69,13 +69,13 @@ export const RecommendedPlaceCard: React.FC<RecommendedPlaceCardProps> = ({
         {/* Content - RIGHT SIDE */}
         <div className="flex-1 min-w-0 flex flex-col py-3 pr-3">
           <div className="mb-1">
-            <h3 className="text-base font-semibold text-gray-900 line-clamp-1">
+            <h3 className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-1">
               {placeName}
             </h3>
           </div>
 
           {/* Address */}
-          <div className="flex items-start gap-1.5 text-sm text-gray-600 mb-2">
+          <div className="flex items-start gap-1.5 text-xs sm:text-sm text-gray-600 mb-2">
             <MapPin size={14} className="mt-0.5 shrink-0 text-gray-400" />
             <p className="line-clamp-1 flex-1">{address}</p>
           </div>

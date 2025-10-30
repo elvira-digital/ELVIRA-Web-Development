@@ -25,7 +25,7 @@ export const PhotoGalleryCard: React.FC<PhotoGalleryCardProps> = ({
   return (
     <button
       onClick={onClick}
-      className="flex-shrink-0 w-72 h-48 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer group"
+      className="flex-shrink-0 w-64 h-40 sm:w-72 sm:h-48 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer group"
     >
       <img
         src={imageUrl}

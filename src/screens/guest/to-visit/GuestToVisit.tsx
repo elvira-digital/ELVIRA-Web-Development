@@ -81,7 +81,10 @@ export const GuestToVisit: React.FC<GuestToVisitProps> = ({ onNavigate }) => {
       <div className="px-4 py-6">
         {/* Header */}
         <div className="mb-6">
-          <p className="text-gray-600">
+          <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-1">
+            Recommended <span className="text-blue-600">Places</span>
+          </h2>
+          <p className="text-xs sm:text-sm text-gray-600">
             Discover amazing places and attractions recommended by our hotel
           </p>
         </div>
@@ -118,7 +121,7 @@ export const GuestToVisit: React.FC<GuestToVisitProps> = ({ onNavigate }) => {
             <p className="text-gray-500">
               No recommended places available at the moment.
             </p>
-            <p className="text-sm text-gray-400 mt-2">
+            <p className="text-xs sm:text-sm text-gray-400 mt-2">
               Check back later for curated recommendations.
             </p>
           </div>
