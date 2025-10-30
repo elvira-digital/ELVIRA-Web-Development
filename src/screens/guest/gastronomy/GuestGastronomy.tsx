@@ -64,16 +64,27 @@ export const GuestGastronomy: React.FC<GuestGastronomyProps> = ({
         <div className="flex flex-col items-center justify-center py-12 px-4">
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md">
             <div className="flex items-start">
-              <svg className="w-6 h-6 text-yellow-600 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="w-6 h-6 text-yellow-600 mr-3 flex-shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               <div>
                 <h3 className="text-sm font-medium text-yellow-800 mb-1">
                   Map View Unavailable
                 </h3>
                 <p className="text-sm text-yellow-700">
-                  Hotel location coordinates are not available in your current session. 
-                  Please log out and log back in to refresh your session data.
+                  Hotel location coordinates are not available in your current
+                  session. Please log out and log back in to refresh your
+                  session data.
                 </p>
               </div>
             </div>

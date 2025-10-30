@@ -243,13 +243,14 @@ export function ComponentExamples() {
         />
         <div className="p-4 bg-gray-50">
           <p className="text-sm text-gray-600">
-            Active tab: <strong>{simpleTabs.find(tab => tab.id === activeSimpleTab)?.label}</strong>
+            Active tab:{" "}
+            <strong>
+              {simpleTabs.find((tab) => tab.id === activeSimpleTab)?.label}
+            </strong>
           </p>
         </div>
       </Card>
-          </p>
-        </div>
-      </Card>
+
 
       {/* Buttons */}
       <Card>
