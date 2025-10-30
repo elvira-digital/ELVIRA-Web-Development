@@ -45,7 +45,7 @@ export function saveGuestSession(
 ): void {
   const now = new Date();
   const sessionExpiresAt = new Date(now.getTime() + 40 * 60 * 1000); // 40 minutes from now
-  
+
   const session = {
     token,
     guestData,

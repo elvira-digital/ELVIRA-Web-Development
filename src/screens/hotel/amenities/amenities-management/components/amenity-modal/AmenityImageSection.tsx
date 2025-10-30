@@ -1,9 +1,4 @@
-import { ModalFormSection } from "../../../../../../components/ui";
-import {
-  ItemImageUpload,
-  ItemImageDisplay,
-} from "../../../../../../components/ui/forms";
-import type { AmenitySectionProps } from "./types";
+
 
 /**
  * AmenityImageSection - Image upload/display for amenities
@@ -61,5 +56,3 @@ export function AmenityImageSection({
     </ModalFormSection>
   );
 }
-
-```
