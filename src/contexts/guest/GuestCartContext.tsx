@@ -22,6 +22,7 @@ export interface ShopCartItem {
   price: number;
   quantity: number;
   imageUrl?: string;
+  maxStock?: number; // Maximum available stock (undefined = unlimited)
 }
 
 export interface RestaurantCartItem {
@@ -100,12 +101,31 @@ export const GuestCartProvider: React.FC<{ children: React.ReactNode }> = ({
       const existingIndex = prev.findIndex((i) => i.id === item.id);
       if (existingIndex >= 0) {
         const updated = [...prev];
-        updated[existingIndex].quantity += item.quantity;
+        const existingItem = updated[existingIndex];
+        const newQuantity = existingItem.quantity + item.quantity;
 
+        // Check stock limit
+        if (
+          existingItem.maxStock !== undefined &&
+          newQuantity > existingItem.maxStock
+        ) {
+          console.warn(
+            `Cannot add more items. Stock limit: ${existingItem.maxStock}`
+          );
+          return prev; // Don't update if exceeds stock
+        }
+
+        updated[existingIndex].quantity = newQuantity;
         return updated;
       }
-      const newCart = [...prev, { ...item, type: "product" as const }];
 
+      // Check stock limit for new item
+      if (item.maxStock !== undefined && item.quantity > item.maxStock) {
+        console.warn(`Cannot add items. Stock limit: ${item.maxStock}`);
+        return prev;
+      }
+
+      const newCart = [...prev, { ...item, type: "product" as const }];
       return newCart;
     });
   }, []);
@@ -135,6 +155,13 @@ export const GuestCartProvider: React.FC<{ children: React.ReactNode }> = ({
     setShopCart((prev) => {
       const item = prev.find((i) => i.id === itemId);
       if (!item) return prev;
+
+      // Check stock limit
+      if (item.maxStock !== undefined && item.quantity >= item.maxStock) {
+        console.warn(`Cannot increment. Stock limit: ${item.maxStock}`);
+        return prev; // Don't increment if at max stock
+      }
+
       return prev.map((i) =>
         i.id === itemId ? { ...i, quantity: i.quantity + 1 } : i
       );

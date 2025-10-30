@@ -49,17 +49,28 @@ export const ProductDetailBottomSheet: React.FC<
     !product.is_unlimited_stock &&
     (product.stock_quantity === null || product.stock_quantity === 0);
 
+  const maxQuantityReached =
+    !product.is_unlimited_stock &&
+    product.stock_quantity !== null &&
+    quantity >= product.stock_quantity;
+
   const handleAdd = () => {
+    if (isOutOfStock) return;
+
     addToShopCart({
       id: product.id,
       name: product.name,
       price: product.price,
       quantity: 1,
       imageUrl: product.image_url || undefined,
+      maxStock: product.is_unlimited_stock
+        ? undefined
+        : product.stock_quantity || 0,
     });
   };
 
   const handleIncrement = () => {
+    if (maxQuantityReached) return;
     incrementShopItem(product.id);
   };
 
@@ -154,12 +165,20 @@ export const ProductDetailBottomSheet: React.FC<
         {/* Fixed Bottom Action Button */}
         <div className="fixed bottom-0 left-0 right-0 p-6 bg-white border-t border-gray-200">
           {quantity > 0 ? (
-            <QuantityControl
-              quantity={quantity}
-              onIncrement={handleIncrement}
-              onDecrement={handleDecrement}
-              disabled={isOutOfStock}
-            />
+            <div className="space-y-2">
+              <QuantityControl
+                quantity={quantity}
+                onIncrement={handleIncrement}
+                onDecrement={handleDecrement}
+                disabled={isOutOfStock}
+                disableIncrement={maxQuantityReached}
+              />
+              {maxQuantityReached && !product.is_unlimited_stock && (
+                <p className="text-xs text-center text-amber-600">
+                  Maximum available quantity reached
+                </p>
+              )}
+            </div>
           ) : (
             <GuestButton
               fullWidth

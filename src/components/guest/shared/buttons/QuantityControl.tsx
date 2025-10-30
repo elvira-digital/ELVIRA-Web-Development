@@ -13,6 +13,7 @@ interface QuantityControlProps {
   onIncrement: () => void;
   onDecrement: () => void;
   disabled?: boolean;
+  disableIncrement?: boolean;
 }
 
 export const QuantityControl: React.FC<QuantityControlProps> = ({
@@ -20,6 +21,7 @@ export const QuantityControl: React.FC<QuantityControlProps> = ({
   onIncrement,
   onDecrement,
   disabled = false,
+  disableIncrement = false,
 }) => {
   return (
     <div className="flex items-center gap-2 sm:gap-3">
@@ -38,9 +40,9 @@ export const QuantityControl: React.FC<QuantityControlProps> = ({
       </div>
       <button
         onClick={onIncrement}
-        disabled={disabled}
+        disabled={disabled || disableIncrement}
         className={`w-9 h-9 sm:w-12 sm:h-12 flex items-center justify-center rounded-full transition-colors shadow-lg ${
-          disabled
+          disabled || disableIncrement
             ? "bg-gray-300 text-gray-500 cursor-not-allowed"
             : "bg-emerald-600 hover:bg-emerald-700 text-white"
         }`}
