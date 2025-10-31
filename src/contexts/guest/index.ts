@@ -11,3 +11,5 @@ export {
   GuestNotificationProvider,
   useGuestNotification,
 } from "./GuestNotificationContext";
+export { GuestThemeProvider } from "./GuestThemeContext";
+export { useGuestTheme, useGuestThemeStyles } from "./useGuestTheme";

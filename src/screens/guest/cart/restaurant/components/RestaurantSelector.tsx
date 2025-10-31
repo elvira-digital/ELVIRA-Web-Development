@@ -7,6 +7,7 @@
 
 import React from "react";
 import { UtensilsCrossed } from "lucide-react";
+import { useGuestTheme } from "../../../../../contexts/guest";
 
 interface RestaurantSelectorProps {
   selectedRestaurantId: string | null;
@@ -19,6 +20,8 @@ export const RestaurantSelector: React.FC<RestaurantSelectorProps> = ({
   onRestaurantChange,
   availableRestaurants,
 }) => {
+  const { theme } = useGuestTheme();
+
   if (availableRestaurants.length === 0) {
     return null; // Don't show if no restaurants
   }
@@ -27,12 +30,34 @@ export const RestaurantSelector: React.FC<RestaurantSelectorProps> = ({
   if (availableRestaurants.length === 1) {
     return (
       <div className="mb-4 sm:mb-6">
-        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
+        <label
+          className="block text-xs sm:text-sm font-semibold mb-2 sm:mb-3"
+          style={{
+            color: theme.color_text_primary,
+            fontFamily: theme.font_family,
+          }}
+        >
           Restaurant
         </label>
-        <div className="flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-4 sm:py-3 bg-emerald-50 border-2 border-emerald-500 rounded-full">
-          <UtensilsCrossed className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
-          <span className="text-xs sm:text-sm font-medium text-emerald-900">
+        <div
+          className="flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-4 sm:py-3 border-2"
+          style={{
+            backgroundColor: `${theme.color_primary}15`,
+            borderColor: theme.color_primary,
+            borderRadius: theme.button_border_radius,
+          }}
+        >
+          <UtensilsCrossed
+            className="w-4 h-4 sm:w-5 sm:h-5"
+            style={{ color: theme.color_primary }}
+          />
+          <span
+            className="text-xs sm:text-sm font-medium"
+            style={{
+              color: theme.color_primary,
+              fontFamily: theme.font_family,
+            }}
+          >
             {availableRestaurants[0].name}
           </span>
         </div>
@@ -43,7 +68,13 @@ export const RestaurantSelector: React.FC<RestaurantSelectorProps> = ({
   // Multiple restaurants - show selector
   return (
     <div className="mb-4 sm:mb-6">
-      <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
+      <label
+        className="block text-xs sm:text-sm font-semibold mb-2 sm:mb-3"
+        style={{
+          color: theme.color_text_primary,
+          fontFamily: theme.font_family,
+        }}
+      >
         Select Restaurant
       </label>
       <div className="grid grid-cols-1 gap-2 sm:gap-3">
@@ -52,25 +83,40 @@ export const RestaurantSelector: React.FC<RestaurantSelectorProps> = ({
             key={restaurant.id}
             type="button"
             onClick={() => onRestaurantChange(restaurant.id)}
-            className={`flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-4 sm:py-3 rounded-full border-2 text-xs sm:text-sm font-medium transition-all ${
-              selectedRestaurantId === restaurant.id
-                ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
-            }`}
+            className="flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-4 sm:py-3 border-2 text-xs sm:text-sm font-medium transition-all"
+            style={{
+              borderRadius: theme.button_border_radius,
+              borderColor:
+                selectedRestaurantId === restaurant.id
+                  ? theme.color_primary
+                  : "#e5e7eb",
+              backgroundColor:
+                selectedRestaurantId === restaurant.id
+                  ? `${theme.color_primary}15`
+                  : "white",
+              color:
+                selectedRestaurantId === restaurant.id
+                  ? theme.color_primary
+                  : theme.color_text_primary,
+              fontFamily: theme.font_family,
+            }}
           >
             <UtensilsCrossed
-              className={`w-4 h-4 sm:w-5 sm:h-5 ${
-                selectedRestaurantId === restaurant.id
-                  ? "text-emerald-600"
-                  : "text-gray-400"
-              }`}
+              className="w-4 h-4 sm:w-5 sm:h-5"
+              style={{
+                color:
+                  selectedRestaurantId === restaurant.id
+                    ? theme.color_primary
+                    : theme.color_text_secondary,
+              }}
             />
             <span>{restaurant.name}</span>
             {selectedRestaurantId === restaurant.id && (
               <svg
-                className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 ml-auto"
+                className="w-4 h-4 sm:w-5 sm:h-5 ml-auto"
                 fill="currentColor"
                 viewBox="0 0 20 20"
+                style={{ color: theme.color_primary }}
               >
                 <path
                   fillRule="evenodd"

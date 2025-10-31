@@ -5,5 +5,4 @@
  */
 
 export { FloatingWidgetMenu } from "./FloatingWidgetMenu";
-export { FloatingBellButton } from "./FloatingBellButton";
-export { FloatingActionButton } from "./FloatingActionButton";
+export { FloatingBellButton, FloatingActionButton } from "./components";

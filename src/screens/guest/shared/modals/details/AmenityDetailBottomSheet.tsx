@@ -42,8 +42,11 @@ export const AmenityDetailBottomSheet: React.FC<
       removeFromAmenityCart(amenity.id);
     } else {
       addToAmenityCart({
-        ...amenity,
+        id: amenity.id,
+        name: amenity.name,
         description: amenity.description || undefined,
+        price: amenity.price,
+        imageUrl: amenity.image_url || undefined,
       });
     }
   };

@@ -14,6 +14,7 @@ import { GuestPageLayout } from "./shared/layout";
 import { useGuestAuth } from "../../contexts/guest";
 import { GuestNotificationProvider } from "../../contexts/guest/GuestNotificationContext";
 import { GuestCartProvider } from "../../contexts/guest/GuestCartContext";
+import { GuestThemeProvider } from "../../contexts/guest/GuestThemeContext";
 
 type GuestRoute =
   | "/guest/home"
@@ -80,30 +81,32 @@ export const GuestRouter: React.FC = () => {
   const { guestData, hotelData } = guestSession;
 
   return (
-    <GuestCartProvider>
-      <GuestNotificationProvider>
-        <GuestPageLayout
-          guestName={guestData.guest_name}
-          hotelName={hotelData.name}
-          roomNumber={guestData.room_number}
-          guestId={guestData.id}
-          dndStatus={guestData.dnd_status}
-          hotelId={guestData.hotel_id}
-          currentPath={currentRoute}
-          onNavigate={handleNavigate}
-          onClockClick={handleClockClick}
-        >
-          {renderPage()}
-        </GuestPageLayout>
+    <GuestThemeProvider hotelId={guestData.hotel_id}>
+      <GuestCartProvider>
+        <GuestNotificationProvider>
+          <GuestPageLayout
+            guestName={guestData.guest_name}
+            hotelName={hotelData.name}
+            roomNumber={guestData.room_number}
+            guestId={guestData.id}
+            dndStatus={guestData.dnd_status}
+            hotelId={guestData.hotel_id}
+            currentPath={currentRoute}
+            onNavigate={handleNavigate}
+            onClockClick={handleClockClick}
+          >
+            {renderPage()}
+          </GuestPageLayout>
 
-        {/* Request History Bottom Sheet */}
-        <RequestHistoryBottomSheet
-          isOpen={isRequestHistoryOpen}
-          onClose={handleCloseRequestHistory}
-          guestId={guestData.id}
-          hotelId={guestData.hotel_id}
-        />
-      </GuestNotificationProvider>
-    </GuestCartProvider>
+          {/* Request History Bottom Sheet */}
+          <RequestHistoryBottomSheet
+            isOpen={isRequestHistoryOpen}
+            onClose={handleCloseRequestHistory}
+            guestId={guestData.id}
+            hotelId={guestData.hotel_id}
+          />
+        </GuestNotificationProvider>
+      </GuestCartProvider>
+    </GuestThemeProvider>
   );
 };

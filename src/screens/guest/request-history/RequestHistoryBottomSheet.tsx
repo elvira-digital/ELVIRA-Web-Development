@@ -5,11 +5,17 @@
  * Includes amenity requests, restaurant orders, and shop orders
  */
 
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { GuestBottomSheet } from "../shared/modals/GuestBottomSheet";
 import { useGuestRequestHistory } from "../../../hooks/guest-management/request-history/useGuestRequestHistory";
 import { useGuestNotification } from "../../../contexts/guest/GuestNotificationContext";
 import { RequestHistoryItemCard } from "./components";
+import {
+  cancelAmenityRequest,
+  cancelRestaurantOrder,
+  cancelShopOrder,
+} from "../../../services/guest";
 import type {
   RequestHistoryItem,
   GroupedRequest,
@@ -17,7 +23,7 @@ import type {
   DineInOrderHistory,
   ShopOrderHistory,
 } from "./types";
-import { Package } from "lucide-react";
+import { Package, CheckCircle } from "lucide-react";
 
 interface RequestHistoryBottomSheetProps {
   isOpen: boolean;
@@ -29,7 +35,11 @@ interface RequestHistoryBottomSheetProps {
 export const RequestHistoryBottomSheet: React.FC<
   RequestHistoryBottomSheetProps
 > = ({ isOpen, onClose, guestId, hotelId }) => {
+  const queryClient = useQueryClient();
   const { triggerBellShake, triggerClockShake } = useGuestNotification();
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [cancelSuccess, setCancelSuccess] = useState<string | null>(null);
+  const [updateTrigger, setUpdateTrigger] = useState(0);
 
   // Handle status changes to trigger shake animations
   const handleStatusChange = useCallback(() => {
@@ -37,15 +47,99 @@ export const RequestHistoryBottomSheet: React.FC<
     triggerClockShake();
   }, [triggerBellShake, triggerClockShake]);
 
-  const { data, isLoading } = useGuestRequestHistory(
+  const { data, isLoading, refetch } = useGuestRequestHistory(
     guestId,
     hotelId,
     handleStatusChange
   );
 
+  // Handle cancel request using guest-specific service functions
+  const handleCancelRequest = useCallback(
+    async (id: string, type: "amenity" | "restaurant" | "shop") => {
+      console.log("🚀 [Cancel Request] Starting cancellation:", { id, type });
+      try {
+        setCancellingId(id);
+
+        let result;
+        if (type === "amenity") {
+          console.log("📋 [Cancel Request] Cancelling amenity request...");
+          result = await cancelAmenityRequest(id);
+        } else if (type === "restaurant") {
+          console.log("🍽️ [Cancel Request] Cancelling restaurant order...");
+          result = await cancelRestaurantOrder(id);
+        } else if (type === "shop") {
+          console.log("🛍️ [Cancel Request] Cancelling shop order...");
+          result = await cancelShopOrder(id);
+        }
+
+        console.log("✅ [Cancel Request] Service result:", result);
+
+        if (result?.success) {
+          console.log("🔄 [Cancel Request] Invalidating query cache...");
+
+          // First, set the data to refetching state
+          queryClient.setQueryData(
+            ["guest-request-history", guestId, hotelId],
+            (oldData: any) => {
+              console.log(
+                "🔄 [Cancel Request] Optimistically updating data..."
+              );
+              return oldData; // Keep old data while refetching
+            }
+          );
+
+          // Invalidate and refetch the query to ensure UI updates
+          await queryClient.invalidateQueries({
+            queryKey: ["guest-request-history", guestId, hotelId],
+            refetchType: "active",
+          });
+          console.log("✅ [Cancel Request] Query cache invalidated");
+
+          // Small delay to let database propagate
+          await new Promise((resolve) => setTimeout(resolve, 100));
+
+          console.log("🔄 [Cancel Request] Refetching data...");
+          const refetchResult = await refetch();
+          console.log("✅ [Cancel Request] Refetch complete:", {
+            dataExists: !!refetchResult.data,
+            amenityCount: refetchResult.data?.amenityRequests?.length,
+            dineInCount: refetchResult.data?.dineInOrders?.length,
+            shopCount: refetchResult.data?.shopOrders?.length,
+          });
+
+          // Force a re-render by updating state
+          setUpdateTrigger((prev) => prev + 1);
+
+          handleStatusChange();
+          setCancelSuccess(id);
+          setTimeout(() => setCancelSuccess(null), 3000);
+          console.log("🎉 [Cancel Request] Cancellation complete!");
+        } else {
+          console.error("❌ [Cancel Request] Failed:", result?.error);
+        }
+      } catch (error) {
+        console.error("💥 [Cancel Request] Error:", error);
+      } finally {
+        setCancellingId(null);
+        console.log("🏁 [Cancel Request] Cleanup complete");
+      }
+    },
+    [handleStatusChange, refetch, queryClient, guestId, hotelId]
+  );
+
   // Transform and group requests by date
   const groupedRequests = useMemo<GroupedRequest[]>(() => {
-    if (!data) return [];
+    console.log("📊 [Transform] Starting data transformation...");
+    if (!data) {
+      console.log("⚠️ [Transform] No data available");
+      return [];
+    }
+
+    console.log("📊 [Transform] Raw data:", {
+      amenityRequests: data.amenityRequests?.length || 0,
+      dineInOrders: data.dineInOrders?.length || 0,
+      shopOrders: data.shopOrders?.length || 0,
+    });
 
     const allItems: RequestHistoryItem[] = [];
 
@@ -161,6 +255,17 @@ export const RequestHistoryBottomSheet: React.FC<
       return dateB - dateA;
     });
 
+    console.log(
+      "📊 [Transform] Total items after transformation:",
+      allItems.length
+    );
+    console.log("📊 [Transform] Items by status:", {
+      pending: allItems.filter((i) => i.status === "pending").length,
+      confirmed: allItems.filter((i) => i.status === "confirmed").length,
+      cancelled: allItems.filter((i) => i.status === "cancelled").length,
+      completed: allItems.filter((i) => i.status === "completed").length,
+    });
+
     // Group by date
     const grouped: { [key: string]: RequestHistoryItem[] } = {};
     allItems.forEach((item) => {
@@ -176,11 +281,16 @@ export const RequestHistoryBottomSheet: React.FC<
     });
 
     // Convert to array format
-    return Object.entries(grouped).map(([date, items]) => ({
+    const result = Object.entries(grouped).map(([date, items]) => ({
       date,
       items,
     }));
-  }, [data]);
+
+    console.log("📊 [Transform] Grouped by date:", result.length, "groups");
+    console.log("✅ [Transform] Transformation complete");
+
+    return result;
+  }, [data, updateTrigger]);
 
   // Calculate totals
   const totalOrders = useMemo(() => {
@@ -217,6 +327,16 @@ export const RequestHistoryBottomSheet: React.FC<
       maxHeight="90vh"
     >
       <div className="px-6 pb-6">
+        {/* Success notification */}
+        {cancelSuccess && (
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2 animate-fade-in">
+            <CheckCircle className="w-5 h-5 text-green-600 shrink-0" />
+            <p className="text-sm text-green-800">
+              Request cancelled successfully
+            </p>
+          </div>
+        )}
+
         {/* Summary Header */}
         <div className="mb-4 pb-3 border-b border-gray-200">
           <p className="text-xs sm:text-sm text-gray-600">
@@ -264,16 +384,40 @@ export const RequestHistoryBottomSheet: React.FC<
                 </div>
 
                 {/* Items for this date */}
-                <div className="space-y-3">
-                  {group.items.map((item) => (
-                    <RequestHistoryItemCard
-                      key={item.id}
-                      item={item}
-                      onClick={() => {
-                        // TODO: Open detail modal for this item
-                        console.log("View details:", item);
-                      }}
-                    />
+                <div className="space-y-0">
+                  {group.items.map((item, index) => (
+                    <div key={item.id} className="relative">
+                      {cancellingId === item.id && (
+                        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 rounded-lg flex items-center justify-center">
+                          <div className="flex items-center gap-2">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-600"></div>
+                            <span className="text-sm text-gray-700">
+                              Cancelling...
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      <div
+                        className={`
+                        ${index === 0 ? "rounded-t-lg" : ""}
+                        ${
+                          index === group.items.length - 1 ? "rounded-b-lg" : ""
+                        }
+                        overflow-hidden
+                      `}
+                      >
+                        <RequestHistoryItemCard
+                          item={item}
+                          onClick={() => {
+                            // TODO: Open detail modal for this item
+                            console.log("View details:", item);
+                          }}
+                          onCancel={handleCancelRequest}
+                          isFirst={index === 0}
+                          isLast={index === group.items.length - 1}
+                        />
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>

@@ -2,10 +2,12 @@
  * Emergency Contacts Section Component
  *
  * Displays important contact information for guest safety
+ * Uses hotel appearance settings from theme context
  */
 
 import React from "react";
 import { Phone } from "lucide-react";
+import { useGuestTheme } from "../../../../contexts/guest";
 
 interface EmergencyContact {
   id: string;
@@ -24,6 +26,8 @@ export const EmergencyContactsSection: React.FC<
   contacts,
   subtitle = "Important contact information for your safety",
 }) => {
+  const { theme } = useGuestTheme();
+
   if (!contacts || contacts.length === 0) {
     return null;
   }
@@ -36,17 +40,36 @@ export const EmergencyContactsSection: React.FC<
     <section className="py-4 px-4 bg-white">
       <div className="mb-3">
         {/* Title */}
-        <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-0.5">
-          Emergency <span className="text-blue-600">Contacts</span>
+        <h2
+          className="mb-0.5"
+          style={{
+            fontSize: theme.font_size_heading,
+            fontFamily: theme.font_family,
+            fontWeight: theme.font_weight_bold,
+            color: theme.color_text_primary,
+          }}
+        >
+          Emergency <span style={{ color: theme.color_primary }}>Contacts</span>
         </h2>
         {/* Subtitle */}
         {subtitle && (
-          <p className="text-xs sm:text-sm text-gray-600">{subtitle}</p>
+          <p
+            style={{
+              fontSize: theme.font_size_small,
+              fontFamily: theme.font_family,
+              color: theme.color_text_secondary,
+            }}
+          >
+            {subtitle}
+          </p>
         )}
       </div>
 
       {/* Contacts List Container with Border */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
+      <div
+        className="border border-gray-200 overflow-hidden"
+        style={{ borderRadius: theme.border_radius }}
+      >
         <div className="divide-y divide-gray-200">
           {contacts.map((contact) => (
             <div
@@ -68,10 +91,13 @@ export const EmergencyContactsSection: React.FC<
                 </button>
                 <button
                   onClick={() => handleCall(contact.phone_number)}
-                  className="text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                  className="transition-colors duration-200"
+                  style={{ color: theme.color_primary }}
                   aria-label={`Call ${contact.contact_name}`}
                 >
-                  <Phone size={16} />
+                  <Phone
+                    style={{ width: theme.icon_size, height: theme.icon_size }}
+                  />
                 </button>
               </div>
             </div>

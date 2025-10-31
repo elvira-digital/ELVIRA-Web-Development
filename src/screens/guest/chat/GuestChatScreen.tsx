@@ -13,7 +13,7 @@ import type {
   ChatMessage,
   ChatUser,
 } from "../../../screens/hotel/chat-management/components/types";
-import { useGuestAuth } from "../../../contexts/guest";
+import { useGuestAuth, useGuestTheme } from "../../../contexts/guest";
 import {
   useGuestConversation,
   useGuestChatMessages,
@@ -31,12 +31,14 @@ export const GuestChatScreen: React.FC<GuestChatScreenProps> = ({
   onClose,
 }) => {
   const { guestSession } = useGuestAuth();
+  const { theme } = useGuestTheme();
 
   // Get guest and hotel IDs
   const guestId = guestSession?.guestData?.id;
   const hotelId = guestSession?.guestData?.hotel_id;
   const guestName = guestSession?.guestData?.guest_name || "Guest";
   const hotelName = guestSession?.hotelData?.name || "Hotel Staff";
+  const receptionPhone = guestSession?.hotelData?.reception_phone;
 
   // Get or create conversation
   const { data: conversation, isLoading: conversationLoading } =
@@ -130,6 +132,16 @@ export const GuestChatScreen: React.FC<GuestChatScreenProps> = ({
     }
   };
 
+  const handleCallHotel = () => {
+    if (receptionPhone) {
+      // Remove any spaces, dashes, or formatting from phone number
+      const cleanPhone = receptionPhone.replace(/[\s\-\(\)]/g, "");
+      window.location.href = `tel:${cleanPhone}`;
+    } else {
+      alert("Hotel phone number is not available");
+    }
+  };
+
   if (!isOpen) return null;
 
   const isLoading =
@@ -138,22 +150,38 @@ export const GuestChatScreen: React.FC<GuestChatScreenProps> = ({
   return (
     <div className="fixed inset-0 bg-white z-[60] flex flex-col">
       {/* Custom Header with Hotel Name and Close Button */}
-      <div className="bg-emerald-600 text-white px-4 py-3 flex items-center justify-between shrink-0">
+      <div
+        className="border-b px-4 py-3 flex items-center justify-between shrink-0"
+        style={{
+          backgroundColor: theme.color_primary,
+          borderColor: theme.color_primary,
+        }}
+      >
         <div className="flex-1">
-          <h1 className="font-semibold text-lg">{hotelName}</h1>
-          <p className="text-sm text-emerald-100">Chat with Hotel Staff</p>
+          <h1
+            className="font-semibold text-lg"
+            style={{
+              fontFamily: theme.font_family,
+              color: theme.color_text_inverse,
+            }}
+          >
+            {hotelName}
+          </h1>
         </div>
         <div className="flex items-center gap-2">
           <button
-            className="p-2 hover:bg-emerald-700 rounded-lg transition-colors"
+            onClick={handleCallHotel}
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            style={{ color: theme.color_text_inverse }}
             aria-label="Call hotel"
-            // TODO: Add call handler here
+            disabled={!receptionPhone}
           >
             <Phone className="w-6 h-6" />
           </button>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-emerald-700 rounded-lg transition-colors"
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            style={{ color: theme.color_text_inverse }}
             aria-label="Close chat"
           >
             <X className="w-6 h-6" />
@@ -179,6 +207,8 @@ export const GuestChatScreen: React.FC<GuestChatScreenProps> = ({
               isLoading={isLoading}
               showVideoCall={false}
               showPhoneCall={false}
+              primaryColor={theme.color_primary}
+              fontFamily={theme.font_family}
             />
           </div>
         </div>

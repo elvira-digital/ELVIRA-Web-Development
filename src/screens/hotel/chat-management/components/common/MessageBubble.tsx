@@ -3,11 +3,15 @@ import type { ChatMessage } from "../types";
 interface MessageBubbleProps {
   message: ChatMessage;
   showAvatar?: boolean;
+  primaryColor?: string;
+  fontFamily?: string;
 }
 
 export function MessageBubble({
   message,
   showAvatar = true,
+  primaryColor = "#10b981",
+  fontFamily,
 }: MessageBubbleProps) {
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString("en-US", {
@@ -41,7 +45,13 @@ export function MessageBubble({
               className="w-8 h-8 rounded-full"
             />
           ) : (
-            <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
+              style={{
+                backgroundColor: primaryColor,
+                fontFamily,
+              }}
+            >
               {message.senderName.charAt(0).toUpperCase()}
             </div>
           )}
@@ -56,21 +66,21 @@ export function MessageBubble({
       >
         {/* Sender Name (for incoming messages) */}
         {!message.isOwn && showAvatar && (
-          <span className="text-xs text-gray-500 mb-1">
+          <span className="text-xs text-gray-500 mb-1" style={{ fontFamily }}>
             {message.senderName}
           </span>
         )}
 
         {/* Message Bubble */}
         <div
-          className={`
-            px-4 py-2 rounded-2xl wrap-break-word
-            ${
-              message.isOwn
-                ? "bg-emerald-500 text-white rounded-br-md"
-                : "bg-gray-100 text-gray-900 rounded-bl-md"
-            }
-          `}
+          className="px-4 py-2 rounded-2xl wrap-break-word"
+          style={{
+            backgroundColor: message.isOwn ? primaryColor : "#f3f4f6",
+            color: message.isOwn ? "#ffffff" : "#111827",
+            borderBottomRightRadius: message.isOwn ? "0.375rem" : undefined,
+            borderBottomLeftRadius: !message.isOwn ? "0.375rem" : undefined,
+            fontFamily,
+          }}
         >
           {message.type === "text" && (
             <p className="text-sm whitespace-pre-wrap">{message.content}</p>
@@ -129,9 +139,10 @@ export function MessageBubble({
               )}
               {message.status === "read" && (
                 <svg
-                  className="w-3 h-3 text-emerald-500"
+                  className="w-3 h-3"
                   fill="currentColor"
                   viewBox="0 0 24 24"
+                  style={{ color: primaryColor }}
                 >
                   <path d="M18.71,7.21L20.12,5.79L9,16.91L3.88,11.79L5.29,10.38L9,14.09L18.71,7.21Z" />
                   <path d="M16.5,10.5L15.09,9.09L9,15.18L6.91,13.09L5.5,14.5L9,18L16.5,10.5Z" />

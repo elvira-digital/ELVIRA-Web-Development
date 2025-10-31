@@ -17,6 +17,8 @@ interface ChatWindowProps {
   onAvatarClick?: () => void;
   inputPlaceholder?: string;
   isLoading?: boolean;
+  primaryColor?: string;
+  fontFamily?: string;
 }
 
 export function ChatWindow({
@@ -32,6 +34,8 @@ export function ChatWindow({
   onAvatarClick,
   inputPlaceholder,
   isLoading = false,
+  primaryColor,
+  fontFamily,
 }: ChatWindowProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -125,6 +129,8 @@ export function ChatWindow({
                 key={message.id}
                 message={message}
                 showAvatar={true}
+                primaryColor={primaryColor}
+                fontFamily={fontFamily}
               />
             ))
           )}
@@ -137,6 +143,8 @@ export function ChatWindow({
         onSendMessage={onSendMessage}
         placeholder={inputPlaceholder}
         disabled={isLoading}
+        primaryColor={primaryColor}
+        fontFamily={fontFamily}
       />
     </div>
   );

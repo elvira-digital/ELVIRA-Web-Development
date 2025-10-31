@@ -189,3 +189,40 @@ export async function createRestaurantOrder(
     };
   }
 }
+
+/**
+ * Cancel a restaurant order (guest can only cancel their own pending orders)
+ */
+export async function cancelRestaurantOrder(
+  orderId: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const supabase = getGuestSupabaseClient();
+    const session = getGuestSession();
+
+    if (!session) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    // Update order status to cancelled
+    const { error } = await supabase
+      .from("dine_in_orders")
+      .update({ status: "cancelled" })
+      .eq("id", orderId)
+      .eq("guest_id", session.guestData.id) // Ensure guest can only cancel their own orders
+      .eq("status", "pending"); // Can only cancel pending orders
+
+    if (error) {
+      console.error("❌ [RestaurantOrders] Error cancelling order:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("💥 [RestaurantOrders] Unexpected error:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}

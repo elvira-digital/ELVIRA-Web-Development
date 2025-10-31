@@ -5,6 +5,9 @@ export {
   clearGuestSession,
 } from "./guestAuth";
 
-export { createAmenityRequest } from "./amenityRequests";
-export { createShopOrder } from "./shopOrders";
-export { createRestaurantOrder } from "./restaurantOrders";
+export { createAmenityRequest, cancelAmenityRequest } from "./amenityRequests";
+export { createShopOrder, cancelShopOrder } from "./shopOrders";
+export {
+  createRestaurantOrder,
+  cancelRestaurantOrder,
+} from "./restaurantOrders";

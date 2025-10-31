@@ -7,8 +7,7 @@
 
 import React, { useState } from "react";
 import { Clock, MessageCircle } from "lucide-react";
-import { FloatingBellButton } from "./FloatingBellButton";
-import { FloatingActionButton } from "./FloatingActionButton";
+import { FloatingBellButton, FloatingActionButton } from "./components";
 import { GuestChatScreen } from "../../../screens/guest/chat";
 import { useGuestNotification } from "../../../contexts/guest/GuestNotificationContext";
 

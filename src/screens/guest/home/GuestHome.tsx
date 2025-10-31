@@ -25,24 +25,22 @@ interface GuestHomeProps {
 export const GuestHome: React.FC<GuestHomeProps> = ({ onNavigate }) => {
   const { guestSession } = useGuestAuth();
 
+  const hotelId = guestSession?.guestData?.hotel_id;
+
   const { data: recommendations, isLoading: recommendationsLoading } =
-    useGuestRecommendations(guestSession?.guestData?.hotel_id, 10);
+    useGuestRecommendations(hotelId, 10);
 
   const {
     data: experienceRecommendations,
     isLoading: experienceRecommendationsLoading,
-  } = useGuestExperienceRecommendations(guestSession?.guestData?.hotel_id, 10);
+  } = useGuestExperienceRecommendations(hotelId, 10);
 
-  const { data: aboutUsData } = useGuestAboutUs(
-    guestSession?.guestData?.hotel_id
-  );
+  const { data: aboutUsData } = useGuestAboutUs(hotelId);
 
-  const { data: photoGalleryData } = useGuestPhotoGallery(
-    guestSession?.guestData?.hotel_id
-  );
+  const { data: photoGalleryData } = useGuestPhotoGallery(hotelId);
 
   const { data: emergencyContacts } = useGuestEmergencyContacts(
-    guestSession?.guestData?.hotel_id ?? null
+    hotelId ?? null
   );
 
   const [selectedCategory, setSelectedCategory] =
@@ -159,7 +157,7 @@ export const GuestHome: React.FC<GuestHomeProps> = ({ onNavigate }) => {
 
       {/* Emergency Contacts Section */}
       {emergencyContacts && emergencyContacts.length > 0 && (
-        <div >
+        <div>
           <EmergencyContactsSection contacts={emergencyContacts} />
         </div>
       )}

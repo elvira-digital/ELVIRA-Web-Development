@@ -6,7 +6,11 @@ import {
   ShoppingBag,
   LogOut,
 } from "lucide-react";
-import { useGuestAuth, useGuestCart } from "../../../../contexts/guest";
+import {
+  useGuestAuth,
+  useGuestCart,
+  useGuestTheme,
+} from "../../../../contexts/guest";
 import { useGuestHotelSettings } from "../../../../hooks/guest-management/settings/useGuestHotelSettings";
 
 interface NavItem {
@@ -31,6 +35,7 @@ export const GuestBottomNav: React.FC<GuestBottomNavProps> = ({
   const { signOut, guestSession } = useGuestAuth();
   const { amenityCartCount, restaurantCartCount, shopCartCount } =
     useGuestCart();
+  const { theme } = useGuestTheme();
   const { data: hotelSettings } = useGuestHotelSettings(
     guestSession?.guestData?.hotel_id
   );
@@ -40,14 +45,20 @@ export const GuestBottomNav: React.FC<GuestBottomNavProps> = ({
       {
         id: "home",
         label: "Home",
-        icon: <Home className="w-6 h-6" />,
+        icon: (
+          <Home style={{ width: theme.icon_size, height: theme.icon_size }} />
+        ),
         path: "/guest/home",
         enabled: true, // Home is always enabled
       },
       {
         id: "services",
         label: "Services",
-        icon: <ConciergeBell className="w-6 h-6" />,
+        icon: (
+          <ConciergeBell
+            style={{ width: theme.icon_size, height: theme.icon_size }}
+          />
+        ),
         path: "/guest/services",
         enabled: hotelSettings?.amenitiesEnabled ?? true,
         badgeCount: amenityCartCount,
@@ -55,7 +66,11 @@ export const GuestBottomNav: React.FC<GuestBottomNavProps> = ({
       {
         id: "dine-in",
         label: "Dine In",
-        icon: <UtensilsCrossed className="w-6 h-6" />,
+        icon: (
+          <UtensilsCrossed
+            style={{ width: theme.icon_size, height: theme.icon_size }}
+          />
+        ),
         path: "/guest/restaurant",
         enabled: hotelSettings?.restaurantEnabled ?? true,
         badgeCount: restaurantCartCount,
@@ -63,7 +78,11 @@ export const GuestBottomNav: React.FC<GuestBottomNavProps> = ({
       {
         id: "shop",
         label: "Shop",
-        icon: <ShoppingBag className="w-6 h-6" />,
+        icon: (
+          <ShoppingBag
+            style={{ width: theme.icon_size, height: theme.icon_size }}
+          />
+        ),
         path: "/guest/shop",
         enabled: hotelSettings?.shopEnabled ?? true,
         badgeCount: shopCartCount,
@@ -71,13 +90,21 @@ export const GuestBottomNav: React.FC<GuestBottomNavProps> = ({
       {
         id: "logout",
         label: "Logout",
-        icon: <LogOut className="w-6 h-6" />,
+        icon: (
+          <LogOut style={{ width: theme.icon_size, height: theme.icon_size }} />
+        ),
         path: "/logout",
         isAction: true,
         enabled: true, // Logout is always enabled
       },
     ],
-    [hotelSettings, amenityCartCount, restaurantCartCount, shopCartCount]
+    [
+      hotelSettings,
+      amenityCartCount,
+      restaurantCartCount,
+      shopCartCount,
+      theme.icon_size,
+    ]
   );
 
   // Filter navigation items based on settings
@@ -106,11 +133,18 @@ export const GuestBottomNav: React.FC<GuestBottomNavProps> = ({
               onClick={() => handleNavClick(item)}
               className={`flex flex-col items-center justify-center gap-0.5 px-2 py-1.5 transition-all flex-1 relative ${
                 isActive
-                  ? "text-blue-600"
+                  ? ""
                   : item.isAction
-                  ? "text-red-500 hover:text-red-700"
+                  ? "hover:text-red-700"
                   : "text-gray-500 hover:text-gray-700"
               }`}
+              style={{
+                color: isActive
+                  ? theme.color_primary
+                  : item.isAction
+                  ? "#ef4444"
+                  : undefined,
+              }}
             >
               <div className="relative scale-90">
                 {item.icon}
@@ -123,6 +157,9 @@ export const GuestBottomNav: React.FC<GuestBottomNavProps> = ({
                 className={`text-xs ${
                   isActive ? "font-semibold" : "font-medium"
                 }`}
+                style={{
+                  fontFamily: theme.font_family,
+                }}
               >
                 {item.label}
               </span>

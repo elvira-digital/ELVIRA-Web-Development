@@ -6,12 +6,16 @@ interface MessageInputProps {
   onSendMessage: (content: string, type: "text" | "file") => void;
   placeholder?: string;
   disabled?: boolean;
+  primaryColor?: string;
+  fontFamily?: string;
 }
 
 export function MessageInput({
   onSendMessage,
   placeholder = "Type a message...",
   disabled = false,
+  primaryColor = "#10b981",
+  fontFamily,
 }: MessageInputProps) {
   const [message, setMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -100,6 +104,11 @@ export function MessageInput({
             onClick={handleSend}
             disabled={disabled || !message.trim()}
             className="shrink-0"
+            style={{
+              backgroundColor: primaryColor,
+              borderColor: primaryColor,
+              fontFamily,
+            }}
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />

@@ -5,6 +5,7 @@
  */
 
 import React from "react";
+import { useGuestTheme } from "../../../../../contexts/guest";
 
 interface ServiceTypeSelectorProps {
   selectedType: string;
@@ -17,13 +18,21 @@ export const ServiceTypeSelector: React.FC<ServiceTypeSelectorProps> = ({
   onTypeChange,
   availableTypes,
 }) => {
+  const { theme } = useGuestTheme();
+
   if (availableTypes.length <= 1) {
     return null; // Don't show selector if only one type available
   }
 
   return (
     <div className="mb-4 sm:mb-6">
-      <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
+      <label
+        className="block text-xs sm:text-sm font-semibold mb-2 sm:mb-3"
+        style={{
+          color: theme.color_text_primary,
+          fontFamily: theme.font_family,
+        }}
+      >
         Service Type
       </label>
       <div className="grid grid-cols-2 gap-2 sm:gap-3">
@@ -31,11 +40,21 @@ export const ServiceTypeSelector: React.FC<ServiceTypeSelectorProps> = ({
           <button
             type="button"
             onClick={() => onTypeChange("Restaurant")}
-            className={`px-3 py-2 sm:px-4 sm:py-3 rounded-full border-2 text-xs sm:text-sm font-medium transition-all ${
-              selectedType === "Restaurant"
-                ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
-            }`}
+            className="px-3 py-2 sm:px-4 sm:py-3 border-2 text-xs sm:text-sm font-medium transition-all"
+            style={{
+              borderRadius: theme.button_border_radius,
+              borderColor:
+                selectedType === "Restaurant" ? theme.color_primary : "#e5e7eb",
+              backgroundColor:
+                selectedType === "Restaurant"
+                  ? `${theme.color_primary}15`
+                  : "white",
+              color:
+                selectedType === "Restaurant"
+                  ? theme.color_primary
+                  : theme.color_text_primary,
+              fontFamily: theme.font_family,
+            }}
           >
             Restaurant
           </button>
@@ -44,11 +63,23 @@ export const ServiceTypeSelector: React.FC<ServiceTypeSelectorProps> = ({
           <button
             type="button"
             onClick={() => onTypeChange("Room Service")}
-            className={`px-3 py-2 sm:px-4 sm:py-3 rounded-full border-2 text-xs sm:text-sm font-medium transition-all ${
-              selectedType === "Room Service"
-                ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
-            }`}
+            className="px-3 py-2 sm:px-4 sm:py-3 border-2 text-xs sm:text-sm font-medium transition-all"
+            style={{
+              borderRadius: theme.button_border_radius,
+              borderColor:
+                selectedType === "Room Service"
+                  ? theme.color_primary
+                  : "#e5e7eb",
+              backgroundColor:
+                selectedType === "Room Service"
+                  ? `${theme.color_primary}15`
+                  : "white",
+              color:
+                selectedType === "Room Service"
+                  ? theme.color_primary
+                  : theme.color_text_primary,
+              fontFamily: theme.font_family,
+            }}
           >
             Room Service
           </button>

@@ -3,10 +3,12 @@
  *
  * Displays a horizontal scrollable section of recommended items
  * Can be used for products, menu items, amenities, or any other recommendations
+ * Uses hotel appearance settings from theme context
  */
 
 import React, { useEffect, useRef } from "react";
 import { RecommendedCard } from "./RecommendedCard";
+import { useGuestTheme } from "../../../../contexts/guest";
 
 export interface RecommendedItem {
   id: string;
@@ -31,9 +33,9 @@ export const RecommendedSection: React.FC<RecommendedSectionProps> = ({
   subtitle,
   items,
   onItemClick,
-  emptyMessage = "No recommendations available",
   showPrice = true, // Default to showing price
 }) => {
+  const { theme } = useGuestTheme();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -83,11 +85,35 @@ export const RecommendedSection: React.FC<RecommendedSectionProps> = ({
     <section className="py-4">
       {/* Header */}
       <div className="px-4 mb-3">
-        <h2 className="text-base sm:text-lg font-bold text-gray-900">
-          {title} <span className="text-blue-600 font-bold">for You</span>
+        <h2
+          style={{
+            fontSize: theme.font_size_heading,
+            fontFamily: theme.font_family,
+            fontWeight: theme.font_weight_bold,
+            color: theme.color_text_primary,
+          }}
+        >
+          {title}{" "}
+          <span
+            style={{
+              color: theme.color_primary,
+              fontWeight: theme.font_weight_bold,
+            }}
+          >
+            for You
+          </span>
         </h2>
         {subtitle && (
-          <p className="text-xs sm:text-sm text-gray-600 mt-1">{subtitle}</p>
+          <p
+            className="mt-1"
+            style={{
+              fontSize: theme.font_size_small,
+              fontFamily: theme.font_family,
+              color: theme.color_text_secondary,
+            }}
+          >
+            {subtitle}
+          </p>
         )}
       </div>
 

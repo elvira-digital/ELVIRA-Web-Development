@@ -121,3 +121,40 @@ export async function createAmenityRequest(
     };
   }
 }
+
+/**
+ * Cancel an amenity request (guest can only cancel their own pending requests)
+ */
+export async function cancelAmenityRequest(
+  requestId: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const supabase = getGuestSupabaseClient();
+    const session = getGuestSession();
+
+    if (!session) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    // Update request status to cancelled
+    const { error } = await supabase
+      .from("amenity_requests")
+      .update({ status: "cancelled" })
+      .eq("id", requestId)
+      .eq("guest_id", session.guestData.id) // Ensure guest can only cancel their own requests
+      .eq("status", "pending"); // Can only cancel pending requests
+
+    if (error) {
+      console.error("❌ [AmenityRequests] Error cancelling request:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("💥 [AmenityRequests] Unexpected error:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}

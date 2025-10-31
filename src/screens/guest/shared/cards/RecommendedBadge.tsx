@@ -18,7 +18,7 @@ export const RecommendedBadge: React.FC<RecommendedBadgeProps> = ({ show }) => {
   return (
     <div className="absolute top-2 left-2 z-10">
       <div className="bg-red-500 rounded-full p-1.5 shadow-md">
-        <Heart size={16} className="text-white fill-white" />
+        <Heart size={14} className="text-white fill-white" />
       </div>
     </div>
   );
