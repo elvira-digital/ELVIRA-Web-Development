@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS public.laundry_orders (
     delivery_date DATE NOT NULL,
     delivery_time TIME,
     special_instructions TEXT,
-    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'in_progress', 'ready', 'delivered', 'cancelled')),
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'picked_up', 'in_progress', 'ready', 'delivered', 'cancelled')),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     created_by UUID REFERENCES public.profiles(id),
