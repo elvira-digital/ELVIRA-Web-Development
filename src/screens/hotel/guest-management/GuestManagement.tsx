@@ -1,30 +1,19 @@
-import { useState, useMemo } from "react";
-import { Table, type TableColumn, StatusBadge } from "../../../components/ui";
+import { useState } from "react";
 import {
   useGuests,
-  useUpdateGuest,
+  useDeleteGuest,
+  type GuestWithPersonalData,
 } from "../../../hooks/guest-management/useGuests";
 import { useHotelContext } from "../../../hooks/useHotelContext";
+import { ConfirmationModal } from "../../../components/ui";
 import {
   PageContent,
   PageHeader,
   PageToolbar,
   TableContainer,
 } from "../../../components/shared/page-layouts";
-
-interface GuestTableData extends Record<string, unknown> {
-  id: string;
-  room: string;
-  status: string;
-  isActive: boolean;
-  dnd: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  country: string;
-  language: string;
-}
+import { AddGuestModal, GuestTable } from "./components";
+import type { GuestFormData } from "./types";
 
 interface GuestManagementProps {
   searchValue?: string;
@@ -34,8 +23,13 @@ export function GuestManagement({
   searchValue: externalSearchValue,
 }: GuestManagementProps) {
   const [internalSearchValue, setInternalSearchValue] = useState("");
-  const [sortColumn, setSortColumn] = useState<string | undefined>(undefined);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [isAddGuestModalOpen, setIsAddGuestModalOpen] = useState(false);
+  const [selectedGuest, setSelectedGuest] =
+    useState<GuestWithPersonalData | null>(null);
+  const [modalMode, setModalMode] = useState<"create" | "edit" | "view">(
+    "create"
+  );
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   // Get hotel ID from context
   const { hotelId } = useHotelContext();
@@ -47,8 +41,8 @@ export function GuestManagement({
     error,
   } = useGuests(hotelId || undefined);
 
-  // Get the update mutation
-  const updateGuest = useUpdateGuest();
+  // Delete guest hook
+  const deleteGuest = useDeleteGuest();
 
   // Use external search value if provided (for tab-based usage), otherwise use internal state
   const searchValue =
@@ -62,135 +56,75 @@ export function GuestManagement({
     setSearchValue("");
   };
 
-  // Transform and filter guest data
-  const guestData = useMemo(() => {
-    const transformedData: GuestTableData[] = guests.map((guest) => ({
-      id: guest.id,
-      room: guest.room_number,
-      status: guest.is_active ? "Active" : "Inactive",
-      isActive: guest.is_active,
-      dnd: guest.dnd_status ? "Yes" : "No",
-      firstName: guest.guest_personal_data?.first_name || "N/A",
-      lastName: guest.guest_personal_data?.last_name || "N/A",
-      email: guest.guest_personal_data?.guest_email || "N/A",
-      phone: guest.guest_personal_data?.phone_number || "N/A",
-      country: guest.guest_personal_data?.country || "N/A",
-      language: guest.guest_personal_data?.language || "N/A",
-    }));
+  // Handle add guest
+  const handleAddGuest = (data: GuestFormData) => {
+    // TODO: Connect to database
+    console.log("Guest data to be saved:", data);
+  };
 
-    // Apply search filter
-    let filtered = transformedData;
-    if (searchValue.trim()) {
-      const searchLower = searchValue.toLowerCase();
-      filtered = transformedData.filter(
-        (guest) =>
-          guest.firstName.toLowerCase().includes(searchLower) ||
-          guest.lastName.toLowerCase().includes(searchLower) ||
-          guest.email.toLowerCase().includes(searchLower) ||
-          guest.room.toLowerCase().includes(searchLower) ||
-          guest.phone.toLowerCase().includes(searchLower)
-      );
-    }
+  // Handle view guest
+  const handleViewGuest = (guest: GuestWithPersonalData) => {
+    setSelectedGuest(guest);
+    setModalMode("view");
+    setIsAddGuestModalOpen(true);
+  };
 
-    // Apply sorting
-    if (sortColumn) {
-      filtered = [...filtered].sort((a, b) => {
-        const aValue = a[sortColumn];
-        const bValue = b[sortColumn];
+  // Handle modal close
+  const handleCloseModal = () => {
+    setIsAddGuestModalOpen(false);
+    setSelectedGuest(null);
+    setModalMode("create");
+  };
 
-        if (aValue == null && bValue == null) return 0;
-        if (aValue == null) return 1;
-        if (bValue == null) return -1;
+  // Handle edit button click in modal footer
+  const handleEdit = () => {
+    setModalMode("edit");
+  };
 
-        const aStr = String(aValue).toLowerCase();
-        const bStr = String(bValue).toLowerCase();
+  // Handle delete button click in modal footer
+  const handleDelete = () => {
+    setIsAddGuestModalOpen(false);
+    setIsDeleteConfirmOpen(true);
+  };
 
-        const aNum = parseFloat(aStr);
-        const bNum = parseFloat(bStr);
-
-        let comparison = 0;
-        if (!isNaN(aNum) && !isNaN(bNum)) {
-          comparison = aNum - bNum;
-        } else {
-          comparison = aStr.localeCompare(bStr);
-        }
-
-        return sortDirection === "asc" ? comparison : -comparison;
-      });
-    }
-
-    return filtered;
-  }, [guests, searchValue, sortColumn, sortDirection]);
-
-  // Handle sort
-  const handleSort = (column: string) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortColumn(column);
-      setSortDirection("asc");
+  // Handle confirm delete
+  const handleConfirmDelete = async () => {
+    if (selectedGuest && hotelId) {
+      try {
+        await deleteGuest.mutateAsync({
+          id: selectedGuest.id,
+          hotelId,
+        });
+        setIsDeleteConfirmOpen(false);
+        handleCloseModal();
+      } catch (error) {
+        console.error("Error deleting guest:", error);
+      }
     }
   };
 
-  // Define table columns
-  const columns: TableColumn<GuestTableData>[] = [
-    {
-      key: "room",
-      label: "Room",
-      sortable: true,
-    },
-    {
-      key: "status",
-      label: "Status",
-      sortable: true,
-      render: (_value, row) => (
-        <StatusBadge
-          status={row.isActive ? "active" : "inactive"}
-          onToggle={async (newStatus) => {
-            await updateGuest.mutateAsync({
-              id: row.id,
-              updates: { is_active: newStatus },
-            });
-          }}
-        />
-      ),
-    },
-    {
-      key: "dnd",
-      label: "DND",
-      sortable: true,
-    },
-    {
-      key: "firstName",
-      label: "First Name",
-      sortable: true,
-    },
-    {
-      key: "lastName",
-      label: "Last Name",
-      sortable: true,
-    },
-    {
-      key: "email",
-      label: "Email",
-      sortable: true,
-    },
-    {
-      key: "phone",
-      label: "Phone",
-      sortable: true,
-    },
-    {
-      key: "country",
-      label: "Country",
-      sortable: true,
-    },
-    {
-      key: "language",
-      label: "Language",
-      sortable: true,
-    },
-  ];
+  // Transform guest data to form format
+  const getGuestFormData = (): GuestFormData | null => {
+    if (!selectedGuest || modalMode === "create") return null;
+
+    return {
+      roomNumber: selectedGuest.room_number,
+      checkoutDate: selectedGuest.access_code_expires_at?.split("T")[0] || "",
+      guests: [
+        {
+          id: selectedGuest.id,
+          accessCode: "", // Don't show existing code for security
+          firstName: selectedGuest.guest_personal_data?.first_name || "",
+          lastName: selectedGuest.guest_personal_data?.last_name || "",
+          email: selectedGuest.guest_personal_data?.guest_email || "",
+          phoneNumber: selectedGuest.guest_personal_data?.phone_number || "",
+          dateOfBirth: selectedGuest.guest_personal_data?.date_of_birth || "",
+          country: selectedGuest.guest_personal_data?.country || "",
+          language: selectedGuest.guest_personal_data?.language || "",
+        },
+      ],
+    };
+  };
 
   return (
     <PageContent>
@@ -221,37 +155,47 @@ export function GuestManagement({
         searchPlaceholder="Search guests by name, room, or email..."
         onSearchClear={handleSearchClear}
         buttonLabel="Add Guest"
-        onButtonClick={() => {
-          // TODO: Open add guest modal
-        }}
+        onButtonClick={() => setIsAddGuestModalOpen(true)}
       />
 
       {/* Guest Management Table */}
       <TableContainer>
-        {searchValue && (
-          <p className="text-sm text-gray-600 mb-4">
-            Searching for: "{searchValue}"
-          </p>
-        )}
-
-        {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-sm text-red-600">
-              Error loading guests: {error.message}
-            </p>
-          </div>
-        )}
-
-        <Table
-          columns={columns}
-          data={guestData}
-          loading={isLoading}
-          sortColumn={sortColumn}
-          sortDirection={sortDirection}
-          onSort={handleSort}
-          emptyMessage="No guests found. Guest information will appear here once check-ins begin."
+        <GuestTable
+          guests={guests}
+          isLoading={isLoading}
+          error={error}
+          searchValue={searchValue}
+          onViewGuest={handleViewGuest}
         />
       </TableContainer>
+
+      {/* Add/Edit/View Guest Modal */}
+      <AddGuestModal
+        isOpen={isAddGuestModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleAddGuest}
+        mode={modalMode}
+        guest={getGuestFormData()}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Guest"
+        message={`Are you sure you want to delete ${
+          selectedGuest?.guest_personal_data?.first_name || ""
+        } ${
+          selectedGuest?.guest_personal_data?.last_name || ""
+        }? This action cannot be undone and will remove the guest from the system permanently.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+        loading={deleteGuest.isPending}
+      />
     </PageContent>
   );
 }

@@ -7,6 +7,7 @@ export { AiSupport } from "./ai-support/AiSupport";
 export { Amenities } from "./amenities/Amenities";
 export { HotelRestaurant } from "./hotel-restaurant/HotelRestaurant";
 export { HotelShop } from "./hotel-shop/HotelShop";
+export { HotelLaundry } from "./hotel-laundry/HotelLaundry";
 export { ThirdPartyManagement } from "./third-party-management/ThirdPartyManagement";
 export { Announcements } from "./announcements/Announcements";
 export { QnA } from "./qna/QnA";

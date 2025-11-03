@@ -35,10 +35,12 @@ export function useFilteredMenuItems() {
       amenities: "hotel_amenities",
       "hotel-restaurant": "room_service_restaurant",
       "hotel-shop": "hotel_shop",
+      "hotel-laundry": "hotel_laundry",
       "third-party-management": "tours_excursions",
       announcements: "hotel_announcements",
       qna: "qa_recommendations",
       "emergency-contacts": "emergency_contacts",
+      "chat-management": "live_chat_support",
     };
 
     return items.filter((item) => {
@@ -46,7 +48,6 @@ export function useFilteredMenuItems() {
       const alwaysVisible = [
         "overview",
         "hotel-staff",
-        "chat-management",
         "guest-management",
         "ai-support",
         "settings",

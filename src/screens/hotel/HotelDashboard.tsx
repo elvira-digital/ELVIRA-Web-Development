@@ -12,6 +12,7 @@ import {
   Amenities,
   HotelRestaurant,
   HotelShop,
+  HotelLaundry,
   ThirdPartyManagement,
   Announcements,
   QnA,
@@ -36,6 +37,7 @@ const componentMap = {
   amenities: <Amenities />,
   "hotel-restaurant": <HotelRestaurant />,
   "hotel-shop": <HotelShop />,
+  "hotel-laundry": <HotelLaundry />,
   "third-party-management": <ThirdPartyManagement />,
   announcements: <Announcements />,
   qna: <QnA />,
@@ -45,10 +47,10 @@ const componentMap = {
 
 // Inner dashboard component that uses hotel context
 function DashboardContent({ user, onSignOut }: HotelDashboardProps) {
-const [activeMenuItem, setActiveMenuItem] = useState("overview");
+  const [activeMenuItem, setActiveMenuItem] = useState("overview");
   const { menuItems } = useFilteredMenuItems();
   const { data: hotelInfo } = useCurrentUserHotel();
-// Real-time subscriptions are now handled by individual module hooks
+  // Real-time subscriptions are now handled by individual module hooks
   // Each module (staff, chat, guests, etc.) has its own real-time subscription
 
   // If current active menu item is hidden, redirect to overview

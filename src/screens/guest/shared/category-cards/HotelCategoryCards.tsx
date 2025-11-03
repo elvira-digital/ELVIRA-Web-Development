@@ -21,11 +21,9 @@ export const HotelCategoryCards: React.FC<HotelCategoryCardsProps> = ({
   onNavigate,
 }) => {
   const { guestSession } = useGuestAuth();
-  const { data: hotelSettings, isLoading } = useGuestHotelSettings(
+  const { data: hotelSettings } = useGuestHotelSettings(
     guestSession?.guestData?.hotel_id
   );
-
-
 
   const hotelCards = useMemo(
     () => [
@@ -51,11 +49,11 @@ export const HotelCategoryCards: React.FC<HotelCategoryCardsProps> = ({
         enabled: hotelSettings?.shopEnabled ?? true,
       },
       {
-        id: "qna",
-        title: "Q&A",
-        description: "Frequently asked questions",
-        path: "/guest/qa",
-        enabled: true, // Q&A is always enabled
+        id: "laundry",
+        title: "Laundry",
+        description: "Laundry services",
+        path: "/guest/laundry",
+        enabled: hotelSettings?.laundryEnabled ?? true,
       },
     ],
     [hotelSettings]
@@ -67,7 +65,10 @@ export const HotelCategoryCards: React.FC<HotelCategoryCardsProps> = ({
     [hotelCards]
   );
 
-
+  // If no cards are visible, return null
+  if (visibleCards.length === 0) {
+    return null;
+  }
 
   return (
     <div className="grid grid-cols-2 gap-2.5 px-4">

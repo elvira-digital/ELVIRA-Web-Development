@@ -17,6 +17,7 @@ import { useGuestExperienceRecommendations } from "../../../hooks/guest-manageme
 import { useGuestAboutUs } from "../../../hooks/guest-management/about-us";
 import { useGuestPhotoGallery } from "../../../hooks/guest-management/photo-gallery";
 import { useGuestEmergencyContacts } from "../../../hooks/guest-management/emergency-contacts";
+import { useGuestHotelSettings } from "../../../hooks/guest-management/settings/useGuestHotelSettings";
 
 interface GuestHomeProps {
   onNavigate?: (path: string) => void;
@@ -43,6 +44,8 @@ export const GuestHome: React.FC<GuestHomeProps> = ({ onNavigate }) => {
     hotelId ?? null
   );
 
+  const { data: hotelSettings } = useGuestHotelSettings(hotelId);
+
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryType>("hotel");
 
@@ -51,6 +54,20 @@ export const GuestHome: React.FC<GuestHomeProps> = ({ onNavigate }) => {
   }
 
   const { guestData } = guestSession;
+
+  // Format dates for display
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0]; // Returns YYYY-MM-DD format
+  };
+
+  const checkInDate = guestData.created_at
+    ? formatDate(guestData.created_at)
+    : "";
+  const checkOutDate = guestData.access_code_expires_at
+    ? formatDate(guestData.access_code_expires_at)
+    : "";
+  const accessCode = guestData.verification_code || "••••••";
 
   // Handle category selection
   const handleCategoryChange = (category: CategoryType) => {
@@ -61,14 +78,17 @@ export const GuestHome: React.FC<GuestHomeProps> = ({ onNavigate }) => {
     <>
       {/* Stay Details Card */}
       <StayDetailsCard
-        checkInDate="2025-08-29"
-        checkOutDate="2025-10-30"
+        checkInDate={checkInDate}
+        checkOutDate={checkOutDate}
         roomNumber={guestData.room_number}
-        accessCode="998218"
+        accessCode={accessCode}
       />
 
       {/* Category Menu */}
-      <CategoryMenu onCategoryChange={handleCategoryChange} />
+      <CategoryMenu
+        onCategoryChange={handleCategoryChange}
+        onNavigate={onNavigate}
+      />
 
       {/* Category Cards - Dynamic based on selected category */}
       <div className="mb-6">
@@ -86,7 +106,8 @@ export const GuestHome: React.FC<GuestHomeProps> = ({ onNavigate }) => {
       {/* Recommended Section - Dynamic based on selected category */}
       {(selectedCategory === "hotel" || selectedCategory === "tovisit") &&
         !recommendationsLoading &&
-        recommendations?.all && (
+        recommendations?.all &&
+        hotelSettings?.qaEnabled !== false && (
           <RecommendedSection
             title="Recommended"
             subtitle="Curated selections from our hotel services"
@@ -108,7 +129,8 @@ export const GuestHome: React.FC<GuestHomeProps> = ({ onNavigate }) => {
       {selectedCategory === "experiences" &&
         !experienceRecommendationsLoading &&
         experienceRecommendations &&
-        experienceRecommendations.length > 0 && (
+        experienceRecommendations.length > 0 &&
+        hotelSettings?.qaEnabled !== false && (
           <RecommendedSection
             title="Recommended"
             subtitle="Curated places recommended by our hotel"
@@ -134,7 +156,7 @@ export const GuestHome: React.FC<GuestHomeProps> = ({ onNavigate }) => {
         )}
 
       {/* About Us Section */}
-      {aboutUsData && (
+      {aboutUsData && hotelSettings?.aboutSectionEnabled !== false && (
         <AboutUsSection
           aboutText={aboutUsData.aboutUs}
           buttonText={aboutUsData.buttonText}
@@ -148,7 +170,7 @@ export const GuestHome: React.FC<GuestHomeProps> = ({ onNavigate }) => {
       )}
 
       {/* Photo Gallery Section */}
-      {photoGalleryData && (
+      {photoGalleryData && hotelSettings?.photoGalleryEnabled !== false && (
         <PhotoGallerySection
           images={photoGalleryData.images}
           subtitle={photoGalleryData.subtitle}
@@ -156,11 +178,13 @@ export const GuestHome: React.FC<GuestHomeProps> = ({ onNavigate }) => {
       )}
 
       {/* Emergency Contacts Section */}
-      {emergencyContacts && emergencyContacts.length > 0 && (
-        <div>
-          <EmergencyContactsSection contacts={emergencyContacts} />
-        </div>
-      )}
+      {emergencyContacts &&
+        emergencyContacts.length > 0 &&
+        hotelSettings?.emergencyContactsEnabled !== false && (
+          <div>
+            <EmergencyContactsSection contacts={emergencyContacts} />
+          </div>
+        )}
     </>
   );
 };

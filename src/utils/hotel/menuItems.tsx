@@ -141,6 +141,25 @@ export const hotelMenuItems: MenuItem[] = [
     ),
   },
   {
+    id: "hotel-laundry",
+    label: "Laundry",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M16 7a4 4 0 11-8 0M5 7h14l-1 14H6L5 7z"
+        />
+      </svg>
+    ),
+  },
+  {
     id: "third-party-management",
     label: "Third Party",
     icon: (

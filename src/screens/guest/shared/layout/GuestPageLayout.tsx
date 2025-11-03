@@ -8,12 +8,13 @@ import {
   useGuestUnreadMessageCount,
 } from "../../../../hooks/guest-chat";
 import { useGuestAnnouncements } from "../../../../hooks/announcements";
+import { useGuestHotelSettings } from "../../../../hooks/guest-management/settings/useGuestHotelSettings";
 
 interface GuestPageLayoutProps {
   guestName: string;
   hotelName: string;
   roomNumber: string;
-  guestId: string;
+  sessionId: string;
   dndStatus: boolean;
   currentPath?: string;
   onNavigate?: (path: string) => void;
@@ -23,13 +24,14 @@ interface GuestPageLayoutProps {
   onMessageClick?: () => void; // Callback for message button
   requestCount?: number; // Number of pending requests to show on bell
   hotelId?: string; // Hotel ID for fetching conversation and announcements
+  guestId?: string; // Guest ID for conversation
 }
 
 export const GuestPageLayout: React.FC<GuestPageLayoutProps> = ({
   guestName,
   hotelName,
   roomNumber,
-  guestId,
+  sessionId,
   dndStatus,
   currentPath,
   onNavigate,
@@ -39,6 +41,7 @@ export const GuestPageLayout: React.FC<GuestPageLayoutProps> = ({
   onMessageClick,
   requestCount = 0,
   hotelId,
+  guestId,
 }) => {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
@@ -53,16 +56,32 @@ export const GuestPageLayout: React.FC<GuestPageLayoutProps> = ({
     !!conversation?.id
   );
 
+  // Fetch hotel settings
+  const { data: hotelSettings } = useGuestHotelSettings(hotelId);
+
   // Fetch announcements
   const { data: announcements = [] } = useGuestAnnouncements(hotelId);
 
-  // Format announcements for ticker
-  const activeAnnouncements = announcements
-    .filter((a) => a.is_active)
-    .map((a) => ({
-      id: a.id,
-      message: `${a.title} • ${a.description}`,
-    }));
+  // Format announcements for ticker (only if enabled)
+  const activeAnnouncements =
+    hotelSettings?.announcementsEnabled !== false
+      ? announcements
+          .filter((a) => a.is_active)
+          .map((a) => ({
+            id: a.id,
+            message: `${a.title} • ${a.description}`,
+          }))
+      : [];
+
+  // Check if at least one hotel service card is enabled (for showing FloatingWidgetMenu)
+  const hasAnyHotelService =
+    hotelSettings?.amenitiesEnabled !== false ||
+    hotelSettings?.shopEnabled !== false ||
+    hotelSettings?.restaurantEnabled !== false ||
+    hotelSettings?.laundryEnabled !== false;
+
+  // Check if live chat support is enabled
+  const isChatEnabled = hotelSettings?.chatEnabled !== false;
 
   // Handle scroll to hide/show header
   useEffect(() => {
@@ -101,7 +120,10 @@ export const GuestPageLayout: React.FC<GuestPageLayoutProps> = ({
   }, []);
 
   return (
-    <div className="fixed inset-0 flex flex-col bg-gray-50">
+    <div
+      className="fixed inset-0 flex flex-col bg-gray-50"
+      style={{ height: "100dvh" }}
+    >
       {/* Fixed Header Section (Header + Ticker + Optional Search/Filter) - Fixed position */}
       <div
         className={`fixed top-0 left-0 right-0 z-40 bg-white shadow-sm transition-transform duration-300 ${
@@ -113,7 +135,7 @@ export const GuestPageLayout: React.FC<GuestPageLayoutProps> = ({
           guestName={guestName}
           hotelName={hotelName}
           roomNumber={roomNumber}
-          guestId={guestId}
+          sessionId={sessionId}
           dndStatus={dndStatus}
         />
 
@@ -137,7 +159,7 @@ export const GuestPageLayout: React.FC<GuestPageLayoutProps> = ({
             guestName={guestName}
             hotelName={hotelName}
             roomNumber={roomNumber}
-            guestId={guestId}
+            sessionId={sessionId}
             dndStatus={dndStatus}
           />
           {activeAnnouncements.length > 0 && (
@@ -153,12 +175,17 @@ export const GuestPageLayout: React.FC<GuestPageLayoutProps> = ({
       </main>
 
       {/* Floating Widget Menu - Bell with Clock and Message buttons */}
-      <FloatingWidgetMenu
-        onClockClick={onClockClick}
-        onMessageClick={onMessageClick}
-        requestCount={requestCount}
-        messageCount={messageCount}
-      />
+      {/* Show widget if chat is enabled OR hotel services are enabled */}
+      {(isChatEnabled || hasAnyHotelService) && (
+        <FloatingWidgetMenu
+          onClockClick={onClockClick}
+          onMessageClick={onMessageClick}
+          requestCount={requestCount}
+          messageCount={messageCount}
+          showClock={hasAnyHotelService}
+          showMessages={isChatEnabled}
+        />
+      )}
 
       {/* Bottom Navigation - Fixed at bottom */}
       <GuestBottomNav currentPath={currentPath} onNavigate={onNavigate} />

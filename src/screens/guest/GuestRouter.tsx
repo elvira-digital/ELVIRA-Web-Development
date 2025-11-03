@@ -4,6 +4,7 @@ import { GuestShop } from "./shop";
 import { GuestAmenities } from "./amenities";
 import { GuestRestaurant } from "./restaurant";
 import { GuestQA } from "./qa";
+import { GuestLaundry } from "./laundry";
 import { GuestPlaces } from "./places";
 import { GuestTours } from "./tours";
 import { GuestWellness } from "./wellness";
@@ -15,6 +16,7 @@ import { useGuestAuth } from "../../contexts/guest";
 import { GuestNotificationProvider } from "../../contexts/guest/GuestNotificationContext";
 import { GuestCartProvider } from "../../contexts/guest/GuestCartContext";
 import { GuestThemeProvider } from "../../contexts/guest/GuestThemeContext";
+import { useGuestHotelSettings } from "../../hooks/guest-management/settings/useGuestHotelSettings";
 
 type GuestRoute =
   | "/guest/home"
@@ -22,6 +24,7 @@ type GuestRoute =
   | "/guest/amenities"
   | "/guest/restaurant"
   | "/guest/qa"
+  | "/guest/laundry"
   | "/guest/places"
   | "/guest/tours"
   | "/guest/wellness"
@@ -33,6 +36,16 @@ export const GuestRouter: React.FC = () => {
   const [currentRoute, setCurrentRoute] = useState<GuestRoute>("/guest/home");
   const [isRequestHistoryOpen, setIsRequestHistoryOpen] = useState(false);
   const { guestSession } = useGuestAuth();
+  const { data: hotelSettings } = useGuestHotelSettings(
+    guestSession?.guestData?.hotel_id
+  );
+
+  // Check if at least one hotel service card is enabled (for showing request history)
+  const hasAnyHotelService =
+    hotelSettings?.amenitiesEnabled !== false ||
+    hotelSettings?.shopEnabled !== false ||
+    hotelSettings?.restaurantEnabled !== false ||
+    hotelSettings?.laundryEnabled !== false;
 
   const handleNavigate = (path: string) => {
     setCurrentRoute(path as GuestRoute);
@@ -59,6 +72,8 @@ export const GuestRouter: React.FC = () => {
         return <GuestRestaurant onNavigate={handleNavigate} />;
       case "/guest/qa":
         return <GuestQA onNavigate={handleNavigate} />;
+      case "/guest/laundry":
+        return <GuestLaundry onNavigate={handleNavigate} />;
       case "/guest/places":
         return <GuestPlaces onNavigate={handleNavigate} />;
       case "/guest/tours":
@@ -80,14 +95,22 @@ export const GuestRouter: React.FC = () => {
 
   const { guestData, hotelData } = guestSession;
 
+  // Construct guest name from personal data (first_name + last_name)
+  const guestName =
+    guestData.guest_personal_data?.first_name &&
+    guestData.guest_personal_data?.last_name
+      ? `${guestData.guest_personal_data.first_name} ${guestData.guest_personal_data.last_name}`.trim()
+      : guestData.guest_name; // Fallback to guest_name if personal data not available
+
   return (
     <GuestThemeProvider hotelId={guestData.hotel_id}>
       <GuestCartProvider>
         <GuestNotificationProvider>
           <GuestPageLayout
-            guestName={guestData.guest_name}
+            guestName={guestName}
             hotelName={hotelData.name}
             roomNumber={guestData.room_number}
+            sessionId={guestData.session_id || ""}
             guestId={guestData.id}
             dndStatus={guestData.dnd_status}
             hotelId={guestData.hotel_id}
@@ -99,12 +122,15 @@ export const GuestRouter: React.FC = () => {
           </GuestPageLayout>
 
           {/* Request History Bottom Sheet */}
-          <RequestHistoryBottomSheet
-            isOpen={isRequestHistoryOpen}
-            onClose={handleCloseRequestHistory}
-            guestId={guestData.id}
-            hotelId={guestData.hotel_id}
-          />
+          {/* Only show if at least one hotel service card is enabled */}
+          {hasAnyHotelService && (
+            <RequestHistoryBottomSheet
+              isOpen={isRequestHistoryOpen}
+              onClose={handleCloseRequestHistory}
+              guestId={guestData.id}
+              hotelId={guestData.hotel_id}
+            />
+          )}
         </GuestNotificationProvider>
       </GuestCartProvider>
     </GuestThemeProvider>

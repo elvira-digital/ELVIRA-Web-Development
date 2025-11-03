@@ -7,3 +7,4 @@
 export { AmenityCartBottomSheet } from "./amenities";
 export { RestaurantCartBottomSheet } from "./restaurant";
 export { ShopCartBottomSheet } from "./shop";
+export { LaundryCartBottomSheet } from "./laundry";

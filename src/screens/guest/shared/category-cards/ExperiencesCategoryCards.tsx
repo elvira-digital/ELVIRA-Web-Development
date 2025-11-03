@@ -24,8 +24,6 @@ export const ExperiencesCategoryCards: React.FC<
     guestSession?.guestData?.hotel_id
   );
 
-
-
   const experienceCards = useMemo(
     () => [
       {
@@ -47,7 +45,7 @@ export const ExperiencesCategoryCards: React.FC<
         title: "Wellness",
         description: "Spa and relaxation services",
         path: "/guest/wellness",
-        enabled: true, // Wellness is always enabled (no specific setting)
+        enabled: hotelSettings?.wellnessEnabled ?? true,
       },
     ],
     [hotelSettings]
@@ -58,6 +56,11 @@ export const ExperiencesCategoryCards: React.FC<
     () => experienceCards.filter((card) => card.enabled),
     [experienceCards]
   );
+
+  // If no cards are visible, return null
+  if (visibleCards.length === 0) {
+    return null;
+  }
 
   return (
     <div className="grid grid-cols-2 gap-2.5 px-4">

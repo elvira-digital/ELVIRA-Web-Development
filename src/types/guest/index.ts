@@ -1,4 +1,6 @@
 export interface GuestPersonalData {
+  first_name?: string | null;
+  last_name?: string | null;
   guest_email: string | null;
   country: string | null;
   language: string | null;
@@ -10,9 +12,12 @@ export interface GuestData {
   room_number: string;
   guest_name: string;
   access_code_expires_at: string;
+  created_at: string;
   dnd_status: boolean;
   is_active: boolean;
   guest_personal_data: GuestPersonalData | null;
+  session_id?: string;
+  verification_code?: string; // For display purposes only (not stored in DB)
 }
 
 export interface HotelData {

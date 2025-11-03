@@ -17,9 +17,11 @@ import type { Database } from "../../../types/database";
 type AmenityRequest = Database["public"]["Tables"]["amenity_requests"]["Row"];
 type DineInOrder = Database["public"]["Tables"]["dine_in_orders"]["Row"];
 type ShopOrder = Database["public"]["Tables"]["shop_orders"]["Row"];
+type LaundryOrder = Database["public"]["Tables"]["laundry_orders"]["Row"];
 type MenuItem = Database["public"]["Tables"]["menu_items"]["Row"];
 type Product = Database["public"]["Tables"]["products"]["Row"];
 type Amenity = Database["public"]["Tables"]["amenities"]["Row"];
+type LaundryService = Database["public"]["Tables"]["laundry_services"]["Row"];
 
 const GUEST_REQUEST_HISTORY_QUERY_KEY = "guest-request-history";
 
@@ -50,10 +52,19 @@ export interface ShopOrderHistory extends ShopOrder {
   }>;
 }
 
+export interface LaundryOrderHistory extends LaundryOrder {
+  services_data?: Array<{
+    service: Pick<LaundryService, "id" | "category" | "description"> | null;
+    quantity: number;
+    price_at_order: number;
+  }>;
+}
+
 export interface GuestRequestHistory {
   amenityRequests: AmenityRequestHistory[];
   dineInOrders: DineInOrderHistory[];
   shopOrders: ShopOrderHistory[];
+  laundryOrders: LaundryOrderHistory[];
 }
 
 /**
@@ -73,11 +84,9 @@ export function useGuestRequestHistory(
     queryKey,
     enabled: !!guestId && !!hotelId,
     onUpdate: () => {
-
       onStatusChange?.();
     },
     onInsert: () => {
-
       onStatusChange?.();
     },
   });
@@ -89,11 +98,9 @@ export function useGuestRequestHistory(
     queryKey,
     enabled: !!guestId && !!hotelId,
     onUpdate: () => {
-
       onStatusChange?.();
     },
     onInsert: () => {
-
       onStatusChange?.();
     },
   });
@@ -105,11 +112,23 @@ export function useGuestRequestHistory(
     queryKey,
     enabled: !!guestId && !!hotelId,
     onUpdate: () => {
-
       onStatusChange?.();
     },
     onInsert: () => {
+      onStatusChange?.();
+    },
+  });
 
+  // Real-time subscription for laundry orders
+  useGuestRealtimeSubscription({
+    table: "laundry_orders",
+    filter: guestId && hotelId ? `guest_id=eq.${guestId}` : undefined,
+    queryKey,
+    enabled: !!guestId && !!hotelId,
+    onUpdate: () => {
+      onStatusChange?.();
+    },
+    onInsert: () => {
       onStatusChange?.();
     },
   });
@@ -122,6 +141,7 @@ export function useGuestRequestHistory(
           amenityRequests: [],
           dineInOrders: [],
           shopOrders: [],
+          laundryOrders: [],
         };
       }
 
@@ -225,10 +245,47 @@ export function useGuestRequestHistory(
         })
       );
 
+      // Fetch laundry orders with services
+      const { data: laundryOrders, error: laundryError } = await guestSupabase
+        .from("laundry_orders")
+        .select(
+          `
+          *,
+          laundry_order_items (
+            quantity,
+            price_at_order,
+            laundry_services (
+              id,
+              category,
+              description
+            )
+          )
+        `
+        )
+        .eq("guest_id", guestId)
+        .eq("hotel_id", hotelId)
+        .order("created_at", { ascending: false });
+
+      if (laundryError) throw laundryError;
+
+      // Transform laundry orders to match our interface
+      const transformedLaundryOrders: LaundryOrderHistory[] = (
+        laundryOrders || []
+      ).map((order) => ({
+        ...order,
+        services_data:
+          order.laundry_order_items?.map((item) => ({
+            service: item.laundry_services,
+            quantity: item.quantity,
+            price_at_order: item.price_at_order,
+          })) || [],
+      }));
+
       return {
         amenityRequests: (amenityRequests || []) as AmenityRequestHistory[],
         dineInOrders: transformedDineInOrders,
         shopOrders: transformedShopOrders,
+        laundryOrders: transformedLaundryOrders,
       };
     },
     enabled: !!guestId && !!hotelId,

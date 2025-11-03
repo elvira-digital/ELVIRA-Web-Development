@@ -1,0 +1,47 @@
+export const COUNTRY_OPTIONS = [
+  { value: "", label: "Select country" },
+  { value: "US", label: "United States" },
+  { value: "GB", label: "United Kingdom" },
+  { value: "CA", label: "Canada" },
+  { value: "AU", label: "Australia" },
+  { value: "DE", label: "Germany" },
+  { value: "FR", label: "France" },
+  { value: "ES", label: "Spain" },
+  { value: "IT", label: "Italy" },
+  { value: "JP", label: "Japan" },
+  { value: "CN", label: "China" },
+  { value: "IN", label: "India" },
+  { value: "BR", label: "Brazil" },
+  { value: "MX", label: "Mexico" },
+  { value: "NL", label: "Netherlands" },
+  { value: "SE", label: "Sweden" },
+  { value: "NO", label: "Norway" },
+  { value: "DK", label: "Denmark" },
+  { value: "FI", label: "Finland" },
+  { value: "PT", label: "Portugal" },
+  { value: "GR", label: "Greece" },
+];
+
+export const LANGUAGE_OPTIONS = [
+  { value: "", label: "Select preferred language" },
+  { value: "en", label: "English" },
+  { value: "es", label: "Spanish" },
+  { value: "fr", label: "French" },
+  { value: "de", label: "German" },
+  { value: "it", label: "Italian" },
+  { value: "pt", label: "Portuguese" },
+  { value: "nl", label: "Dutch" },
+  { value: "sv", label: "Swedish" },
+  { value: "no", label: "Norwegian" },
+  { value: "da", label: "Danish" },
+  { value: "fi", label: "Finnish" },
+  { value: "ja", label: "Japanese" },
+  { value: "zh", label: "Chinese" },
+  { value: "hi", label: "Hindi" },
+];
+
+export const ACTIVE_STATUS_OPTIONS = [
+  { value: "true", label: "Select Active" },
+  { value: "active", label: "Active" },
+  { value: "inactive", label: "Inactive" },
+];

@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Bell, BellOff } from "lucide-react";
 import { useToggleDND } from "../../../../hooks/guest-management/useToggleDND";
+import { useGuestAuth } from "../../../../contexts/guest";
+import { useGuestHotelSettings } from "../../../../hooks/guest-management/settings/useGuestHotelSettings";
 
 interface GuestHeaderProps {
   guestName: string;
   hotelName: string;
   roomNumber: string;
-  guestId: string;
+  sessionId: string;
   dndStatus: boolean;
 }
 
@@ -14,16 +16,20 @@ export const GuestHeader: React.FC<GuestHeaderProps> = ({
   guestName,
   hotelName,
   roomNumber,
-  guestId,
+  sessionId,
   dndStatus: initialDndStatus,
 }) => {
   const [dndStatus, setDndStatus] = useState(initialDndStatus);
   const toggleDND = useToggleDND();
+  const { guestSession } = useGuestAuth();
+  const { data: hotelSettings } = useGuestHotelSettings(
+    guestSession?.guestData?.hotel_id
+  );
 
   const handleDNDToggle = async () => {
     try {
       await toggleDND.mutateAsync({
-        guestId,
+        sessionId,
         currentStatus: dndStatus,
       });
       setDndStatus(!dndStatus);
@@ -49,27 +55,30 @@ export const GuestHeader: React.FC<GuestHeaderProps> = ({
             className="relative p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
             aria-label="Notifications"
           ></button>
-          <button
-            onClick={handleDNDToggle}
-            disabled={toggleDND.isPending}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-colors border border-gray-300 ${
-              dndStatus
-                ? "bg-red-50 text-red-600 hover:bg-red-100"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            {dndStatus ? (
-              <>
-                <BellOff className="w-3.5 h-3.5" />
-                DND On
-              </>
-            ) : (
-              <>
-                <Bell className="w-3.5 h-3.5" />
-                DND Off
-              </>
-            )}
-          </button>
+          {/* Only show DND toggle if enabled in hotel settings */}
+          {hotelSettings?.dndEnabled !== false && (
+            <button
+              onClick={handleDNDToggle}
+              disabled={toggleDND.isPending}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-colors border border-gray-300 ${
+                dndStatus
+                  ? "bg-red-50 text-red-600 hover:bg-red-100"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              {dndStatus ? (
+                <>
+                  <BellOff className="w-3.5 h-3.5" />
+                  DND On
+                </>
+              ) : (
+                <>
+                  <Bell className="w-3.5 h-3.5" />
+                  DND Off
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </header>

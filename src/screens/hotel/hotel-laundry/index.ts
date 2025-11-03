@@ -1,0 +1,1 @@
+export { HotelLaundry } from "./HotelLaundry";

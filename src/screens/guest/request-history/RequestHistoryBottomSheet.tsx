@@ -15,6 +15,7 @@ import {
   cancelAmenityRequest,
   cancelRestaurantOrder,
   cancelShopOrder,
+  cancelLaundryOrder,
 } from "../../../services/guest";
 import type {
   RequestHistoryItem,
@@ -22,6 +23,7 @@ import type {
   AmenityRequestHistory,
   DineInOrderHistory,
   ShopOrderHistory,
+  LaundryOrderHistory,
 } from "./types";
 import { Package, CheckCircle } from "lucide-react";
 
@@ -39,7 +41,6 @@ export const RequestHistoryBottomSheet: React.FC<
   const { triggerBellShake, triggerClockShake } = useGuestNotification();
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [cancelSuccess, setCancelSuccess] = useState<string | null>(null);
-  const [updateTrigger, setUpdateTrigger] = useState(0);
 
   // Handle status changes to trigger shake animations
   const handleStatusChange = useCallback(() => {
@@ -55,7 +56,7 @@ export const RequestHistoryBottomSheet: React.FC<
 
   // Handle cancel request using guest-specific service functions
   const handleCancelRequest = useCallback(
-    async (id: string, type: "amenity" | "restaurant" | "shop") => {
+    async (id: string, type: "amenity" | "restaurant" | "shop" | "laundry") => {
       console.log("🚀 [Cancel Request] Starting cancellation:", { id, type });
       try {
         setCancellingId(id);
@@ -70,6 +71,9 @@ export const RequestHistoryBottomSheet: React.FC<
         } else if (type === "shop") {
           console.log("🛍️ [Cancel Request] Cancelling shop order...");
           result = await cancelShopOrder(id);
+        } else if (type === "laundry") {
+          console.log("🧺 [Cancel Request] Cancelling laundry order...");
+          result = await cancelLaundryOrder(id);
         }
 
         console.log("✅ [Cancel Request] Service result:", result);
@@ -80,7 +84,7 @@ export const RequestHistoryBottomSheet: React.FC<
           // First, set the data to refetching state
           queryClient.setQueryData(
             ["guest-request-history", guestId, hotelId],
-            (oldData: any) => {
+            (oldData: unknown) => {
               console.log(
                 "🔄 [Cancel Request] Optimistically updating data..."
               );
@@ -108,8 +112,6 @@ export const RequestHistoryBottomSheet: React.FC<
           });
 
           // Force a re-render by updating state
-          setUpdateTrigger((prev) => prev + 1);
-
           handleStatusChange();
           setCancelSuccess(id);
           setTimeout(() => setCancelSuccess(null), 3000);
@@ -139,6 +141,7 @@ export const RequestHistoryBottomSheet: React.FC<
       amenityRequests: data.amenityRequests?.length || 0,
       dineInOrders: data.dineInOrders?.length || 0,
       shopOrders: data.shopOrders?.length || 0,
+      laundryOrders: data.laundryOrders?.length || 0,
     });
 
     const allItems: RequestHistoryItem[] = [];
@@ -248,6 +251,48 @@ export const RequestHistoryBottomSheet: React.FC<
       });
     });
 
+    // Transform laundry orders
+    data.laundryOrders.forEach((order: LaundryOrderHistory) => {
+      allItems.push({
+        id: order.id,
+        type: "laundry",
+        title: "Laundry Order",
+        subtitle: `${order.services_data?.length || 0} service${
+          (order.services_data?.length || 0) !== 1 ? "s" : ""
+        }`,
+        items:
+          order.services_data?.map((item) => ({
+            name: `${item.service?.category || "Unknown"} - ${
+              item.service?.description || "Unknown Service"
+            }`,
+            quantity: item.quantity,
+          })) || [],
+        total: order.total_price || 0,
+        status: order.status,
+        createdAt: order.created_at || "",
+        deliveryInfo:
+          order.pickup_date && order.delivery_date
+            ? `Pickup: ${new Date(order.pickup_date).toLocaleDateString(
+                "en-US",
+                {
+                  month: "short",
+                  day: "numeric",
+                }
+              )}${
+                order.pickup_time ? ` at ${order.pickup_time}` : ""
+              }, Delivery: ${new Date(order.delivery_date).toLocaleDateString(
+                "en-US",
+                {
+                  month: "short",
+                  day: "numeric",
+                }
+              )}${order.delivery_time ? ` at ${order.delivery_time}` : ""}`
+            : undefined,
+        notes: order.special_instructions,
+        data: order,
+      });
+    });
+
     // Sort all items by date (newest first)
     allItems.sort((a, b) => {
       const dateA = new Date(a.createdAt).getTime();
@@ -290,7 +335,7 @@ export const RequestHistoryBottomSheet: React.FC<
     console.log("✅ [Transform] Transformation complete");
 
     return result;
-  }, [data, updateTrigger]);
+  }, [data]);
 
   // Calculate totals
   const totalOrders = useMemo(() => {
@@ -298,7 +343,8 @@ export const RequestHistoryBottomSheet: React.FC<
     return (
       data.amenityRequests.length +
       data.dineInOrders.length +
-      data.shopOrders.length
+      data.shopOrders.length +
+      data.laundryOrders.length
     );
   }, [data]);
 
@@ -316,7 +362,11 @@ export const RequestHistoryBottomSheet: React.FC<
       (sum, order) => sum + (order.total_price || 0),
       0
     );
-    return amenityTotal + dineInTotal + shopTotal;
+    const laundryTotal = data.laundryOrders.reduce(
+      (sum, order) => sum + (order.total_price || 0),
+      0
+    );
+    return amenityTotal + dineInTotal + shopTotal + laundryTotal;
   }, [data]);
 
   return (

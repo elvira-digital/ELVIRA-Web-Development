@@ -38,7 +38,7 @@ const DEFAULT_THEME: Omit<
   border_radius: "0.75rem", // 12px
   button_border_radius: "9999px", // Fully rounded for buttons
   card_style: "elevated",
-  icon_size: "24px",
+  icon_size: "20px",
 
   // Stay Card
   stay_card_gradient_from: "#3b82f6", // blue-500
@@ -86,13 +86,13 @@ const convertBorderRadiusToCSS = (value: string | null): string => {
 };
 
 const convertIconSizeToCSS = (value: string | null): string => {
-  if (!value) return "24px";
+  if (!value) return "20px";
 
   const iconSizeMap: Record<string, string> = {
-    small: "20px",
-    medium: "24px",
-    large: "28px",
-    xlarge: "32px",
+    small: "16px",
+    medium: "20px",
+    large: "24px",
+    xlarge: "28px",
   };
 
   // If it's already a CSS value, return as-is
@@ -100,7 +100,7 @@ const convertIconSizeToCSS = (value: string | null): string => {
     return value;
   }
 
-  return iconSizeMap[value.toLowerCase()] || "24px";
+  return iconSizeMap[value.toLowerCase()] || "20px";
 };
 
 // Helper function to convert border radius specifically for buttons (fully rounded when "large")

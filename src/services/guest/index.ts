@@ -11,3 +11,4 @@ export {
   createRestaurantOrder,
   cancelRestaurantOrder,
 } from "./restaurantOrders";
+export { createLaundryOrder, cancelLaundryOrder } from "./laundryOrders";

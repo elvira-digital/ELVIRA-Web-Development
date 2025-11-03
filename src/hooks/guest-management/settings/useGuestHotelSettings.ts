@@ -16,9 +16,16 @@ interface GuestHotelSettings {
   amenitiesEnabled: boolean;
   shopEnabled: boolean;
   restaurantEnabled: boolean;
+  laundryEnabled: boolean;
   toursEnabled: boolean;
   localRestaurantsEnabled: boolean;
+  wellnessEnabled: boolean;
+  placesToVisitEnabled: boolean;
   chatEnabled: boolean;
+  announcementsEnabled: boolean;
+  qaEnabled: boolean;
+  emergencyContactsEnabled: boolean;
+  publicTransportEnabled: boolean;
 }
 
 const GUEST_HOTEL_SETTINGS_QUERY_KEY = "guest-hotel-settings";
@@ -39,9 +46,16 @@ export function useGuestHotelSettings(hotelId: string | undefined) {
           amenitiesEnabled: true,
           shopEnabled: true,
           restaurantEnabled: true,
+          laundryEnabled: true,
           toursEnabled: true,
           localRestaurantsEnabled: true,
+          wellnessEnabled: true,
+          placesToVisitEnabled: true,
           chatEnabled: true,
+          announcementsEnabled: true,
+          qaEnabled: true,
+          emergencyContactsEnabled: true,
+          publicTransportEnabled: true,
         };
       }
 
@@ -63,9 +77,16 @@ export function useGuestHotelSettings(hotelId: string | undefined) {
           amenitiesEnabled: true,
           shopEnabled: true,
           restaurantEnabled: true,
+          laundryEnabled: true,
           toursEnabled: true,
           localRestaurantsEnabled: true,
+          wellnessEnabled: true,
+          placesToVisitEnabled: true,
           chatEnabled: true,
+          announcementsEnabled: true,
+          qaEnabled: true,
+          emergencyContactsEnabled: true,
+          publicTransportEnabled: true,
         };
       }
 
@@ -74,20 +95,25 @@ export function useGuestHotelSettings(hotelId: string | undefined) {
         data.map((s) => [s.setting_key, s.setting_value])
       );
 
-
-
       const result = {
         aboutSectionEnabled: settingsMap.get("about_section") !== false,
         photoGalleryEnabled: settingsMap.get("hotel_photo_gallery") !== false,
-        dndEnabled: settingsMap.get("dnd") !== false,
+        dndEnabled: settingsMap.get("do_not_disturb") !== false,
         amenitiesEnabled: settingsMap.get("hotel_amenities") !== false,
         shopEnabled: settingsMap.get("hotel_shop") !== false,
         restaurantEnabled: settingsMap.get("room_service_restaurant") !== false,
+        laundryEnabled: settingsMap.get("hotel_laundry") !== false,
         toursEnabled: settingsMap.get("tours_excursions") !== false,
         localRestaurantsEnabled: settingsMap.get("local_restaurants") !== false,
+        wellnessEnabled: settingsMap.get("wellness") !== false,
+        placesToVisitEnabled: settingsMap.get("places_to_visit") !== false,
         chatEnabled: settingsMap.get("live_chat_support") !== false,
+        announcementsEnabled: settingsMap.get("hotel_announcements") !== false,
+        qaEnabled: settingsMap.get("qa_recommendations") !== false,
+        emergencyContactsEnabled:
+          settingsMap.get("emergency_contacts") !== false,
+        publicTransportEnabled: settingsMap.get("public_transport") !== false,
       };
-
 
       return result;
     },

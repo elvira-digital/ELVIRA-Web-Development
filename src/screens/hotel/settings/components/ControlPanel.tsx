@@ -63,9 +63,12 @@ export function ControlPanel() {
     return {
       hotelAmenities: getSettingValue("hotel_amenities"),
       hotelShop: getSettingValue("hotel_shop"),
+      hotelLaundry: getSettingValue("hotel_laundry"),
       toursExcursions: getSettingValue("tours_excursions"),
       roomServiceRestaurant: getSettingValue("room_service_restaurant"),
       localRestaurants: getSettingValue("local_restaurants"),
+      wellness: getSettingValue("wellness"),
+      placesToVisit: getSettingValue("places_to_visit"),
       liveChatSupport: getSettingValue("live_chat_support"),
     };
   }, [settings]);

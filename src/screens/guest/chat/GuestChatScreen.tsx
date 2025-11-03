@@ -148,10 +148,13 @@ export const GuestChatScreen: React.FC<GuestChatScreenProps> = ({
     conversationLoading || messagesLoading || sendMessage.isPending;
 
   return (
-    <div className="fixed inset-0 bg-white z-[60] flex flex-col">
-      {/* Custom Header with Hotel Name and Close Button */}
+    <div
+      className="fixed inset-0 bg-white z-[60] flex flex-col"
+      style={{ height: "100dvh" }}
+    >
+      {/* Custom Header with Hotel Name and Close Button - Sticky */}
       <div
-        className="border-b px-4 py-3 flex items-center justify-between shrink-0"
+        className="sticky top-0 z-10 border-b px-4 py-2 flex items-center justify-between shrink-0"
         style={{
           backgroundColor: theme.color_primary,
           borderColor: theme.color_primary,
@@ -159,7 +162,7 @@ export const GuestChatScreen: React.FC<GuestChatScreenProps> = ({
       >
         <div className="flex-1">
           <h1
-            className="font-semibold text-lg"
+            className="font-semibold text-base"
             style={{
               fontFamily: theme.font_family,
               color: theme.color_text_inverse,
@@ -168,23 +171,23 @@ export const GuestChatScreen: React.FC<GuestChatScreenProps> = ({
             {hotelName}
           </h1>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <button
             onClick={handleCallHotel}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
             style={{ color: theme.color_text_inverse }}
             aria-label="Call hotel"
             disabled={!receptionPhone}
           >
-            <Phone className="w-6 h-6" />
+            <Phone className="w-5 h-5" />
           </button>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
             style={{ color: theme.color_text_inverse }}
             aria-label="Close chat"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5" />
           </button>
         </div>
       </div>

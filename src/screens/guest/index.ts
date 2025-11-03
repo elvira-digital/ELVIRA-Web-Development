@@ -3,6 +3,7 @@ export { GuestShop } from "./shop";
 export { GuestAmenities } from "./amenities";
 export { GuestRestaurant } from "./restaurant";
 export { GuestQA } from "./qa";
+export { GuestLaundry } from "./laundry";
 export { GuestPlaces } from "./places";
 export { GuestTours } from "./tours";
 export { GuestWellness } from "./wellness";

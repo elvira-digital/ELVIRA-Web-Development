@@ -46,7 +46,21 @@ export interface AmenityCartItem {
   imageUrl?: string;
 }
 
-export type CartItem = ShopCartItem | RestaurantCartItem | AmenityCartItem;
+export interface LaundryCartItem {
+  type: "laundry_service";
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  quantity: number;
+  category: string;
+}
+
+export type CartItem =
+  | ShopCartItem
+  | RestaurantCartItem
+  | AmenityCartItem
+  | LaundryCartItem;
 
 interface GuestCartContextType {
   // Shop cart
@@ -80,6 +94,17 @@ interface GuestCartContextType {
   clearAmenityCart: () => void;
   amenityCartCount: number;
   isAmenityInCart: (itemId: string) => boolean;
+
+  // Laundry cart
+  laundryCart: LaundryCartItem[];
+  addToLaundryCart: (item: Omit<LaundryCartItem, "type">) => void;
+  removeFromLaundryCart: (itemId: string) => void;
+  updateLaundryCartQuantity: (itemId: string, quantity: number) => void;
+  incrementLaundryItem: (itemId: string) => void;
+  decrementLaundryItem: (itemId: string) => void;
+  clearLaundryCart: () => void;
+  laundryCartCount: number;
+  getLaundryItemQuantity: (itemId: string) => number;
 }
 
 const GuestCartContext = createContext<GuestCartContextType | undefined>(
@@ -94,6 +119,7 @@ export const GuestCartProvider: React.FC<{ children: React.ReactNode }> = ({
     []
   );
   const [amenityCart, setAmenityCart] = useState<AmenityCartItem[]>([]);
+  const [laundryCart, setLaundryCart] = useState<LaundryCartItem[]>([]);
 
   // Shop cart methods
   const addToShopCart = useCallback((item: Omit<ShopCartItem, "type">) => {
@@ -320,6 +346,84 @@ export const GuestCartProvider: React.FC<{ children: React.ReactNode }> = ({
     []
   );
 
+  // Laundry cart methods
+  const addToLaundryCart = useCallback(
+    (item: Omit<LaundryCartItem, "type">) => {
+      setLaundryCart((prev) => {
+        const existingIndex = prev.findIndex((i) => i.id === item.id);
+        if (existingIndex >= 0) {
+          const updated = [...prev];
+          updated[existingIndex].quantity += item.quantity;
+          return updated;
+        }
+
+        const newCart = [
+          ...prev,
+          { ...item, type: "laundry_service" as const },
+        ];
+        return newCart;
+      });
+    },
+    []
+  );
+
+  const removeFromLaundryCart = useCallback((itemId: string) => {
+    setLaundryCart((prev) => prev.filter((item) => item.id !== itemId));
+  }, []);
+
+  const updateLaundryCartQuantity = useCallback(
+    (itemId: string, quantity: number) => {
+      if (quantity <= 0) {
+        removeFromLaundryCart(itemId);
+        return;
+      }
+      setLaundryCart((prev) =>
+        prev.map((item) => (item.id === itemId ? { ...item, quantity } : item))
+      );
+    },
+    [removeFromLaundryCart]
+  );
+
+  const clearLaundryCart = useCallback(() => {
+    setLaundryCart([]);
+  }, []);
+
+  const incrementLaundryItem = useCallback((itemId: string) => {
+    setLaundryCart((prev) => {
+      const item = prev.find((i) => i.id === itemId);
+      if (!item) return prev;
+      return prev.map((i) =>
+        i.id === itemId ? { ...i, quantity: i.quantity + 1 } : i
+      );
+    });
+  }, []);
+
+  const decrementLaundryItem = useCallback((itemId: string) => {
+    setLaundryCart((prev) => {
+      const item = prev.find((i) => i.id === itemId);
+      if (!item) return prev;
+      if (item.quantity <= 1) {
+        return prev.filter((i) => i.id !== itemId);
+      }
+      return prev.map((i) =>
+        i.id === itemId ? { ...i, quantity: i.quantity - 1 } : i
+      );
+    });
+  }, []);
+
+  const getLaundryItemQuantity = useCallback(
+    (itemId: string) => {
+      const item = laundryCart.find((i) => i.id === itemId);
+      return item ? item.quantity : 0;
+    },
+    [laundryCart]
+  );
+
+  const laundryCartCount = useMemo(() => {
+    const count = laundryCart.reduce((sum, item) => sum + item.quantity, 0);
+    return count;
+  }, [laundryCart]);
+
   const removeFromAmenityCart = useCallback((itemId: string) => {
     setAmenityCart((prev) => prev.filter((item) => item.id !== itemId));
   }, []);
@@ -370,6 +474,15 @@ export const GuestCartProvider: React.FC<{ children: React.ReactNode }> = ({
         clearAmenityCart,
         amenityCartCount,
         isAmenityInCart,
+        laundryCart,
+        addToLaundryCart,
+        removeFromLaundryCart,
+        updateLaundryCartQuantity,
+        incrementLaundryItem,
+        decrementLaundryItem,
+        clearLaundryCart,
+        laundryCartCount,
+        getLaundryItemQuantity,
       }}
     >
       {children}

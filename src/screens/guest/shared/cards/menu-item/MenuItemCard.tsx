@@ -158,7 +158,11 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
         )}
 
         {/* Content - RIGHT SIDE */}
-        <div className="flex-1 min-w-0 flex flex-col py-3 pr-3">
+        <div
+          className={`flex-1 min-w-0 flex flex-col py-3 pr-3 ${
+            !imageUrl ? "pl-4" : ""
+          }`}
+        >
           <div className="flex items-start justify-between gap-2 mb-1">
             <h3 className="text-base font-semibold text-gray-900 line-clamp-1">
               {title}
@@ -168,7 +172,60 @@ export const MenuItemCard: React.FC<MenuItemCardProps> = ({
             </span>
           </div>
           {description && (
-            <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
+            <p className="text-sm text-gray-600 line-clamp-2 mb-2">
+              {description}
+            </p>
+          )}
+
+          {/* Quantity controls for cards without images */}
+          {!imageUrl && (
+            <div className="flex items-center justify-between mt-auto">
+              <div className="flex-1" /> {/* Spacer */}
+              {showQuantityCounter ? (
+                <div className="flex items-center gap-0.5 bg-gray-100 rounded-full px-1 py-0.5">
+                  <button
+                    onClick={handleDecrement}
+                    className="w-7 h-7 flex items-center justify-center text-blue-600 hover:bg-white rounded-full transition-colors"
+                    aria-label="Decrease quantity"
+                  >
+                    <Minus size={14} />
+                  </button>
+                  <span className="text-sm font-semibold text-gray-900 min-w-6 text-center">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={handleIncrement}
+                    className="w-7 h-7 flex items-center justify-center text-blue-600 hover:bg-white rounded-full transition-colors"
+                    aria-label="Increase quantity"
+                  >
+                    <Plus size={14} />
+                  </button>
+                </div>
+              ) : isAdded ? (
+                <button
+                  onClick={handleRemoveClick}
+                  className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shadow-sm hover:bg-green-600 active:bg-green-700 transition-colors"
+                  aria-label={`Remove ${title}`}
+                >
+                  <Check size={16} className="text-white" />
+                </button>
+              ) : (
+                onAddClick && (
+                  <button
+                    onClick={handleAddClick}
+                    disabled={disabled}
+                    className={`w-8 h-8 bg-white border-2 border-gray-200 rounded-full flex items-center justify-center transition-all duration-200 shadow-sm ${
+                      disabled
+                        ? "cursor-not-allowed opacity-50"
+                        : "hover:bg-blue-50 hover:border-blue-500"
+                    }`}
+                    aria-label={`Add ${title}`}
+                  >
+                    <Plus size={16} className="text-blue-600" />
+                  </button>
+                )
+              )}
+            </div>
           )}
         </div>
       </div>

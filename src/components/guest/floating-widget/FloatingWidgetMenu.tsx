@@ -16,6 +16,8 @@ interface FloatingWidgetMenuProps {
   onMessageClick?: () => void;
   requestCount?: number;
   messageCount?: number;
+  showClock?: boolean; // Control clock icon visibility
+  showMessages?: boolean; // Control messages icon visibility
 }
 
 export const FloatingWidgetMenu: React.FC<FloatingWidgetMenuProps> = ({
@@ -23,6 +25,8 @@ export const FloatingWidgetMenu: React.FC<FloatingWidgetMenuProps> = ({
   onMessageClick,
   requestCount = 0,
   messageCount = 0,
+  showClock = true,
+  showMessages = true,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -48,7 +52,7 @@ export const FloatingWidgetMenu: React.FC<FloatingWidgetMenuProps> = ({
   // Show message count: 0 when chat is open, otherwise show actual count
   const displayMessageCount = isChatOpen ? 0 : messageCount;
 
-  const actions = [
+  const allActions = [
     {
       icon: MessageCircle,
       label: "Messages",
@@ -56,6 +60,7 @@ export const FloatingWidgetMenu: React.FC<FloatingWidgetMenuProps> = ({
       bgColor: "bg-blue-500",
       shouldShake: false, // Messages don't shake for order updates
       badgeCount: isOpen ? displayMessageCount : 0, // Show message count only when menu is open
+      visible: showMessages,
     },
     {
       icon: Clock,
@@ -64,8 +69,17 @@ export const FloatingWidgetMenu: React.FC<FloatingWidgetMenuProps> = ({
       bgColor: "bg-purple-500",
       shouldShake: shouldShakeClock, // Shake when order status changes
       badgeCount: 0, // Clock doesn't show badge
+      visible: showClock,
     },
   ];
+
+  // Filter to only visible actions
+  const actions = allActions.filter((action) => action.visible);
+
+  // If no actions are visible, don't render the widget
+  if (actions.length === 0) {
+    return null;
+  }
 
   return (
     <>

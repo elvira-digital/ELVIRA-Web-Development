@@ -89,6 +89,12 @@ export function GuestAuthProvider({ children }: { children: ReactNode }) {
             filter: `id=eq.${guestId}`,
           },
           (payload) => {
+            console.log(
+              "🔄 Realtime update received for guest:",
+              guestId,
+              payload.new
+            );
+
             // Update the session with new guest data
             if (payload.new) {
               setGuestSession((prevSession) => {
@@ -103,6 +109,11 @@ export function GuestAuthProvider({ children }: { children: ReactNode }) {
                   },
                   hotelData: currentHotelData,
                 };
+
+                console.log(
+                  "✅ Session updated with new DND status:",
+                  updatedSession.guestData.dnd_status
+                );
 
                 saveGuestSession(
                   currentToken,
@@ -144,13 +155,19 @@ export function GuestAuthProvider({ children }: { children: ReactNode }) {
         return { error: response.error || "Authentication failed" };
       }
 
+      // Add the verification code to guestData for display purposes
+      const guestDataWithCode = {
+        ...response.guestData,
+        verification_code: verificationCode,
+      };
+
       const session: GuestSession = {
         token: response.token,
-        guestData: response.guestData,
+        guestData: guestDataWithCode,
         hotelData: response.hotelData,
       };
 
-      saveGuestSession(response.token, response.guestData, response.hotelData);
+      saveGuestSession(response.token, guestDataWithCode, response.hotelData);
       setGuestSession(session);
 
       return {};
