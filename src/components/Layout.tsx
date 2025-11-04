@@ -1,6 +1,6 @@
 import type { ReactNode, ReactElement } from "react";
 import { useState } from "react";
-import { Sidebar } from "./Sidebar";
+import { Sidebar, type MenuItemNotifications } from "./Sidebar";
 import { colors, typography } from "../utils/theme";
 import { sidebarColors } from "../utils/theme";
 
@@ -22,6 +22,7 @@ interface LayoutProps {
   onMenuItemChange?: (itemId: string) => void;
   collapsible?: boolean;
   hotelName?: string;
+  notifications?: MenuItemNotifications;
 }
 
 export function Layout({
@@ -33,6 +34,7 @@ export function Layout({
   onMenuItemChange,
   collapsible = false,
   hotelName,
+  notifications,
 }: LayoutProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -100,6 +102,7 @@ export function Layout({
         collapsible={collapsible}
         hotelName={hotelName}
         isCollapsed={isCollapsed}
+        notifications={notifications}
       />
 
       {/* Main Content */}

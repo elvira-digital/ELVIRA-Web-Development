@@ -1,0 +1,15 @@
+{
+  "name": "elvira-test-data-generator",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Generate fake test data for ELVIRA Hotel Management System",
+  "main": "index.js",
+  "scripts": {
+    "generate": "node index.js"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^8.0.0",
+    "@supabase/supabase-js": "^2.38.0",
+    "dotenv": "^16.3.1"
+  }
+}

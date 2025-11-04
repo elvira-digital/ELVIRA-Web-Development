@@ -2,10 +2,12 @@
  * Guest Q&A Recommendations Hook
  *
  * Fetches active Q&A recommendations for guests
+ * Includes real-time subscriptions for instant updates
  */
 
 import { useOptimizedQuery } from "../../api/useOptimizedQuery";
 import { getGuestSupabaseClient } from "../../../services/guestSupabase";
+import { useGuestRealtimeSubscription } from "../../realtime/useGuestRealtimeSubscription";
 import type { Database } from "../../../types/database";
 
 type QARecommendation =
@@ -16,7 +18,7 @@ type QARecommendation =
  * Returns recommendations grouped by category
  */
 export function useGuestQARecommendations(hotelId: string | undefined) {
-  return useOptimizedQuery<QARecommendation[]>({
+  const query = useOptimizedQuery<QARecommendation[]>({
     queryKey: ["guest-qa-recommendations", hotelId],
     queryFn: async () => {
       if (!hotelId) return [];
@@ -39,4 +41,14 @@ export function useGuestQARecommendations(hotelId: string | undefined) {
       gcTime: 15 * 60 * 1000,
     },
   });
+
+  // Real-time subscription for Q&A recommendations
+  useGuestRealtimeSubscription({
+    table: "qa_recommendations",
+    filter: hotelId ? `hotel_id=eq.${hotelId}` : undefined,
+    queryKey: ["guest-qa-recommendations", hotelId],
+    enabled: !!hotelId,
+  });
+
+  return query;
 }

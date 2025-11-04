@@ -1,10 +1,15 @@
 import type { ReactElement } from "react";
 import { sidebarColors } from "../utils/theme";
+import { NotificationBadge } from "./notifications";
 
 interface MenuItem {
   id: string;
   label: string;
   icon: ReactElement;
+}
+
+export interface MenuItemNotifications {
+  [menuItemId: string]: number;
 }
 
 interface SidebarProps {
@@ -19,6 +24,7 @@ interface SidebarProps {
   collapsible?: boolean;
   hotelName?: string;
   isCollapsed?: boolean;
+  notifications?: MenuItemNotifications;
 }
 
 export function Sidebar({
@@ -30,6 +36,7 @@ export function Sidebar({
   collapsible = false,
   hotelName,
   isCollapsed = false,
+  notifications = {},
 }: SidebarProps) {
   // Get hotel initials from hotel name
   const getHotelInitials = (name?: string) => {
@@ -120,53 +127,66 @@ export function Sidebar({
             isCollapsed ? "flex-1 flex flex-col justify-evenly" : "space-y-1"
           }`}
         >
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => onMenuItemChange?.(item.id)}
-              className={`w-full flex items-center transition-all duration-200 ${
-                activeMenuItem === item.id
-                  ? "rounded-l-xl pr-8 font-semibold"
-                  : "rounded-xl mr-4"
-              }`}
-              style={{
-                padding: "0.625rem 0.875rem",
-                fontSize: "1rem",
-                fontFamily: '"Inter", sans-serif',
-                fontWeight: activeMenuItem === item.id ? "600" : "500",
-                backgroundColor:
+          {menuItems.map((item) => {
+            const notificationCount = notifications[item.id] || 0;
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => onMenuItemChange?.(item.id)}
+                className={`w-full flex items-center justify-between transition-all duration-200 ${
                   activeMenuItem === item.id
-                    ? sidebarColors.activeBg
-                    : "transparent",
-                color:
-                  activeMenuItem === item.id
-                    ? sidebarColors.activeText
-                    : sidebarColors.text,
-                boxShadow:
-                  activeMenuItem === item.id
-                    ? "0 4px 12px -2px rgba(0, 0, 0, 0.15)"
-                    : "none",
-                border: "none",
-                cursor: "pointer",
-                letterSpacing: "0.01em",
-              }}
-              onMouseEnter={(e) => {
-                if (activeMenuItem !== item.id) {
-                  e.currentTarget.style.backgroundColor = sidebarColors.hoverBg;
-                  e.currentTarget.style.color = sidebarColors.textHover;
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (activeMenuItem !== item.id) {
-                  e.currentTarget.style.backgroundColor = "transparent";
-                  e.currentTarget.style.color = sidebarColors.text;
-                }
-              }}
-            >
-              <span className="shrink-0">{item.icon}</span>
-              {!isCollapsed && <span className="ml-3">{item.label}</span>}
-            </button>
-          ))}
+                    ? "rounded-l-xl pr-8 font-semibold"
+                    : "rounded-xl mr-4"
+                }`}
+                style={{
+                  padding: "0.625rem 0.875rem",
+                  fontSize: "1rem",
+                  fontFamily: '"Inter", sans-serif',
+                  fontWeight: activeMenuItem === item.id ? "600" : "500",
+                  backgroundColor:
+                    activeMenuItem === item.id
+                      ? sidebarColors.activeBg
+                      : "transparent",
+                  color:
+                    activeMenuItem === item.id
+                      ? sidebarColors.activeText
+                      : sidebarColors.text,
+                  boxShadow:
+                    activeMenuItem === item.id
+                      ? "0 4px 12px -2px rgba(0, 0, 0, 0.15)"
+                      : "none",
+                  border: "none",
+                  cursor: "pointer",
+                  letterSpacing: "0.01em",
+                }}
+                onMouseEnter={(e) => {
+                  if (activeMenuItem !== item.id) {
+                    e.currentTarget.style.backgroundColor =
+                      sidebarColors.hoverBg;
+                    e.currentTarget.style.color = sidebarColors.textHover;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeMenuItem !== item.id) {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = sidebarColors.text;
+                  }
+                }}
+              >
+                <div className="flex items-center">
+                  <span className="shrink-0">{item.icon}</span>
+                  {!isCollapsed && <span className="ml-3">{item.label}</span>}
+                </div>
+                {notificationCount > 0 && (
+                  <NotificationBadge
+                    count={notificationCount}
+                    isCollapsed={isCollapsed}
+                  />
+                )}
+              </button>
+            );
+          })}
         </nav>
       </div>
 

@@ -29,13 +29,13 @@ async function fetchAIAnalytics(
       `
       id,
       message_text,
-      topics,
-      subtopics,
+      topic,
+      subtopic,
       sentiment,
       urgency,
       created_at,
       guest_id,
-      guests!inner (
+      guests (
         id,
         guest_name,
         guest_personal_data (
@@ -57,8 +57,8 @@ async function fetchAIAnalytics(
     (msg: {
       id: string;
       message_text: string;
-      topics: string[] | null;
-      subtopics: string | null;
+      topic: string | null;
+      subtopic: string | null;
       sentiment: string | null;
       urgency: string | null;
       created_at: string;
@@ -75,8 +75,8 @@ async function fetchAIAnalytics(
     }) => ({
       id: msg.id,
       message_text: msg.message_text,
-      topics: msg.topics,
-      subtopics: msg.subtopics,
+      topics: msg.topic ? [msg.topic] : null,
+      subtopics: msg.subtopic,
       sentiment: msg.sentiment,
       urgency: msg.urgency,
       created_at: msg.created_at,

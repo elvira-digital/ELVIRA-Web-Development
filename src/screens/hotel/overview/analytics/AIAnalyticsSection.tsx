@@ -20,12 +20,29 @@ interface AIAnalyticsSectionProps {
 }
 
 export function AIAnalyticsSection({ hotelId }: AIAnalyticsSectionProps) {
-  const { data, isLoading } = useAIAnalytics(hotelId);
+  const { data, isLoading, error } = useAIAnalytics(hotelId);
 
-  if (isLoading || !data) {
+  if (isLoading) {
     return (
       <div style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>
         Loading AI analytics...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: "20px", textAlign: "center", color: "#ef4444" }}>
+        Error loading AI analytics:{" "}
+        {error instanceof Error ? error.message : "Unknown error"}
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div style={{ padding: "20px", textAlign: "center", color: "#6b7280" }}>
+        No data available
       </div>
     );
   }

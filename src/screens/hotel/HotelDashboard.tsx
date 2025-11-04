@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Layout } from "../../components/Layout";
 import { HotelProvider } from "../../contexts/HotelContext";
 import { useFilteredMenuItems } from "../../hooks";
 import { useCurrentUserHotel } from "../../hooks/useCurrentUserHotel";
+import { usePendingNotifications } from "../../hooks/notifications";
+import type { MenuItemNotifications } from "../../components/Sidebar";
 import {
   Overview,
   HotelStaff,
@@ -50,6 +52,25 @@ function DashboardContent({ user, onSignOut }: HotelDashboardProps) {
   const [activeMenuItem, setActiveMenuItem] = useState("overview");
   const { menuItems } = useFilteredMenuItems();
   const { data: hotelInfo } = useCurrentUserHotel();
+
+  // Fetch pending notifications for sidebar badges
+  const { data: pendingNotifications } = usePendingNotifications(
+    hotelInfo?.hotel?.id
+  );
+
+  // Map pending notifications to menu item IDs
+  const menuNotifications: MenuItemNotifications = useMemo(() => {
+    if (!pendingNotifications) return {};
+
+    return {
+      "chat-management": pendingNotifications.chatManagement || 0,
+      amenities: pendingNotifications.amenities || 0,
+      "hotel-restaurant": pendingNotifications.restaurant || 0,
+      "hotel-shop": pendingNotifications.shop || 0,
+      "hotel-laundry": pendingNotifications.laundry || 0,
+    };
+  }, [pendingNotifications]);
+
   // Real-time subscriptions are now handled by individual module hooks
   // Each module (staff, chat, guests, etc.) has its own real-time subscription
 
@@ -72,6 +93,7 @@ function DashboardContent({ user, onSignOut }: HotelDashboardProps) {
       onMenuItemChange={setActiveMenuItem}
       collapsible={true}
       hotelName={hotelInfo?.hotel?.name}
+      notifications={menuNotifications}
     >
       {activeComponent}
     </Layout>
