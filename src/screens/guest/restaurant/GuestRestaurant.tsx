@@ -8,6 +8,7 @@ import {
 } from "../shared/modals";
 import { GuestRestaurantHeader } from "./GuestRestaurantHeader";
 import { RestaurantCartBottomSheet } from "../cart";
+import { trackItemInteraction } from "../../../services/guest-analytics/realTimeTracking";
 
 interface GuestRestaurantProps {
   onNavigate?: (path: string) => void;
@@ -82,7 +83,18 @@ export const GuestRestaurant: React.FC<GuestRestaurantProps> = ({
 
   const handleMenuItemClick = (itemId: string) => {
     const menuItem = menuItems.find((m) => m.id === itemId);
-    if (menuItem) {
+    if (menuItem && guestSession?.guestData) {
+      // Track interaction with this specific menu item
+      trackItemInteraction({
+        guestId: guestSession.guestData.id,
+        hotelId: guestSession.guestData.hotel_id,
+        sessionId: guestSession.guestData.id,
+        sectionType: "restaurant",
+        actionType: "click",
+        itemId: itemId,
+        itemName: menuItem.name,
+      });
+
       setSelectedMenuItem(menuItem);
       setIsDetailOpen(true);
     }

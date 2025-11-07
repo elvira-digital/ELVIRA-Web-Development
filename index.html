@@ -26,18 +26,10 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <script
-      async
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwD-Fgd4yf3rSg4yrisH93YxgTbQZiv-w&libraries=places&callback=initMap"
-    ></script>
+    <!-- Google Maps will be loaded dynamically from main.tsx -->
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      window.initMap = function () {
-        console.log("✅ Google Maps API loaded");
-      };
-    </script>
   </body>
 </html>

@@ -8,6 +8,8 @@ import { Layout } from "./components/Layout";
 import { HotelDashboard } from "./screens/hotel/HotelDashboard";
 import { ElviraDashboard } from "./screens/elvira/ElviraDashboard";
 import { Overview as ElviraOverview } from "./screens/elvira/overview";
+import { HotelsManagement } from "./screens/elvira/hotels/HotelsManagement";
+import { EmployeesManagement } from "./screens/elvira/employees/EmployeesManagement";
 import { elviraMenuItems } from "./utils/elvira/menuItems";
 
 function GuestApp() {
@@ -65,13 +67,26 @@ function App() {
 
   // Show layout for elvira users
   if (user.role === "elvira") {
+    console.log("🎯 ELVIRA USER DETECTED - Active menu:", activeMenuItem);
+
     const renderElviraContent = () => {
+      console.log("📄 Rendering Elvira content for:", activeMenuItem);
+
       switch (activeMenuItem) {
         case "overview":
+          console.log("✅ Rendering ElviraOverview");
           return <ElviraOverview />;
         case "dashboard":
+          console.log("✅ Rendering ElviraDashboard");
           return <ElviraDashboard />;
+        case "hotels":
+          console.log("✅ Rendering HotelsManagement");
+          return <HotelsManagement />;
+        case "employees":
+          console.log("✅ Rendering EmployeesManagement");
+          return <EmployeesManagement />;
         default:
+          console.log("⚠️ Default case - Rendering ElviraOverview");
           return <ElviraOverview />;
       }
     };

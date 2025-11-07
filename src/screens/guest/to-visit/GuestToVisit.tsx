@@ -6,6 +6,7 @@ import {
   RecommendedPlaceBottomSheet,
 } from "./components";
 import type { Database } from "../../../types/database";
+import { trackItemInteraction } from "../../../services/guest-analytics/realTimeTracking";
 
 type RecommendedPlace =
   Database["public"]["Tables"]["hotel_recommended_places"]["Row"] & {
@@ -56,6 +57,19 @@ export const GuestToVisit: React.FC<GuestToVisitProps> = ({ onNavigate }) => {
   const handlePlaceClick = (placeId: string) => {
     const place = placesWithImages.find((p) => p.id === placeId);
     if (place) {
+      // Track interaction with this recommended place
+      if (guestSession?.guestData) {
+        trackItemInteraction({
+          guestId: guestSession.guestData.id,
+          hotelId: guestSession.guestData.hotel_id,
+          sessionId: guestSession.guestData.id,
+          sectionType: "to-visit",
+          itemId: place.id,
+          itemName: place.place_name,
+          itemCategory: "recommended",
+          actionType: "click",
+        });
+      }
       setSelectedPlace(place);
       setIsDetailOpen(true);
     }

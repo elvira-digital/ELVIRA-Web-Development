@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { GuestHome } from "./home";
 import { GuestShop } from "./shop";
 import { GuestAmenities } from "./amenities";
@@ -17,6 +17,10 @@ import { GuestNotificationProvider } from "../../contexts/guest/GuestNotificatio
 import { GuestCartProvider } from "../../contexts/guest/GuestCartContext";
 import { GuestThemeProvider } from "../../contexts/guest/GuestThemeContext";
 import { useGuestHotelSettings } from "../../hooks/guest-management/settings/useGuestHotelSettings";
+import {
+  trackSectionEnter,
+  trackSectionExit,
+} from "../../services/guest-analytics/realTimeTracking";
 
 type GuestRoute =
   | "/guest/home"
@@ -39,6 +43,41 @@ export const GuestRouter: React.FC = () => {
   const { data: hotelSettings } = useGuestHotelSettings(
     guestSession?.guestData?.hotel_id
   );
+  const currentSectionRef = useRef<string | null>(null);
+
+  // Track section entry when route changes
+  useEffect(() => {
+    if (guestSession?.guestData) {
+      const {
+        id: guestId,
+        hotel_id: hotelId,
+        id: sessionId,
+      } = guestSession.guestData;
+      let section = currentRoute.replace("/guest/", "");
+
+      // Normalize 'services' to 'amenities' since they're the same page
+      if (section === "services") {
+        section = "amenities";
+      }
+
+      // Exit previous section if exists
+      if (currentSectionRef.current) {
+        trackSectionExit(guestId, sessionId, currentSectionRef.current);
+      }
+
+      // Enter new section
+      trackSectionEnter(guestId, hotelId, sessionId, section);
+      currentSectionRef.current = section;
+    }
+
+    // Cleanup: exit current section when component unmounts
+    return () => {
+      if (guestSession?.guestData && currentSectionRef.current) {
+        const { id: guestId, id: sessionId } = guestSession.guestData;
+        trackSectionExit(guestId, sessionId, currentSectionRef.current);
+      }
+    };
+  }, [currentRoute, guestSession]);
 
   // Check if at least one hotel service card is enabled (for showing request history)
   const hasAnyHotelService =

@@ -17,6 +17,8 @@ import {
   MapPinned,
   Navigation,
 } from "lucide-react";
+import { useGuestAuth } from "../../../../../contexts/guest/GuestAuthContext";
+import { useDetailViewTracking } from "../../../../../hooks/guest-analytics/useDetailViewTracking";
 
 // Haversine formula to calculate distance between two coordinates
 function calculateDistance(
@@ -97,6 +99,20 @@ export const PlaceDetailBottomSheet: React.FC<PlaceDetailBottomSheetProps> = ({
   onClose,
   place,
 }) => {
+  const { guestSession } = useGuestAuth();
+
+  // Track detail view duration
+  useDetailViewTracking({
+    isOpen,
+    guestId: guestSession?.guestData?.id,
+    hotelId: guestSession?.guestData?.hotel_id,
+    sessionId: guestSession?.guestData?.id,
+    sectionType: place?.type || "wellness", // Use place type (wellness/tours/gastronomy)
+    itemId: place?.id,
+    itemName: place?.name,
+    itemCategory: place?.type,
+  });
+
   if (!place) {
     return null;
   }

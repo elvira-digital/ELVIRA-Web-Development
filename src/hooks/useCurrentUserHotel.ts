@@ -8,13 +8,15 @@ import { useAuth } from "./useAuth";
  */
 export function useCurrentUserHotel() {
   const { user, loading: authLoading } = useAuth();
-return useQuery({
+
+  return useQuery({
     queryKey: ["current-user-hotel", user?.id],
     queryFn: async () => {
-if (!user?.id) {
-return null;
+      if (!user?.id) {
+        return null;
       }
-// First get the staff record to find the hotel_id and personal data
+
+      // Get the staff record to find the hotel_id and personal data
       const { data: staffRecord, error: staffError } = await supabase
         .from("hotel_staff")
         .select(
@@ -23,15 +25,17 @@ return null;
           hotel_staff_personal_data (first_name, last_name, email, phone_number)`
         )
         .eq("id", user.id)
-        .single();
-if (staffError) {
-throw staffError;
+        .maybeSingle();
+
+      if (staffError) {
+        throw staffError;
       }
 
       if (!staffRecord) {
-return null;
+        return null;
       }
-// Get personal data (might be array, so take first element)
+
+      // Get personal data (might be array, so take first element)
       const personalData = Array.isArray(staffRecord.hotel_staff_personal_data)
         ? staffRecord.hotel_staff_personal_data[0]
         : staffRecord.hotel_staff_personal_data;

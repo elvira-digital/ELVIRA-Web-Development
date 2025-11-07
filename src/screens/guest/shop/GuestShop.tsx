@@ -8,6 +8,7 @@ import {
   type ProductDetailData,
 } from "../shared/modals";
 import { ShopCartBottomSheet } from "../cart";
+import { trackItemInteraction } from "../../../services/guest-analytics/realTimeTracking";
 
 interface GuestShopProps {
   onNavigate?: (path: string) => void;
@@ -78,7 +79,18 @@ export const GuestShop: React.FC<GuestShopProps> = ({ onNavigate }) => {
 
   const handleProductClick = (itemId: string) => {
     const product = products.find((p) => p.id === itemId);
-    if (product) {
+    if (product && guestSession?.guestData) {
+      // Track interaction with this specific product
+      trackItemInteraction({
+        guestId: guestSession.guestData.id,
+        hotelId: guestSession.guestData.hotel_id,
+        sessionId: guestSession.guestData.id,
+        sectionType: "shop",
+        actionType: "click",
+        itemId: itemId,
+        itemName: product.name,
+      });
+
       setSelectedProduct(product);
       setIsDetailOpen(true);
     }

@@ -6,6 +6,7 @@ import { useGuestGastronomyPlaces } from "../../../hooks/guest-management/gastro
 import { PlaceDetailBottomSheet } from "../shared/modals";
 import { GuestPlacesMapView } from "../shared/maps";
 import { usePlaceMapView } from "../shared/hooks";
+import { trackItemInteraction } from "../../../services/guest-analytics/realTimeTracking";
 
 interface GuestGastronomyProps {
   onNavigate?: (path: string) => void;
@@ -33,7 +34,7 @@ export const GuestGastronomy: React.FC<GuestGastronomyProps> = ({
     filteredPlaces,
     filteredMapPlaces,
     setSearchQuery,
-    handlePlaceClick,
+    handlePlaceClick: originalHandlePlaceClick,
     handleCloseDetail,
     handleMapClick,
     handleCloseMap,
@@ -48,6 +49,31 @@ export const GuestGastronomy: React.FC<GuestGastronomyProps> = ({
   if (!guestSession) {
     return null;
   }
+
+  // Wrapper to track clicks before opening detail
+  const handlePlaceClick = (placeId: string) => {
+    // Find the place data with nested thirdparty_places
+    const placeData = gastronomyPlaces.find((item: any) => {
+      const place = item.thirdparty_places;
+      return place?.id === placeId;
+    });
+
+    if (placeData && guestSession?.guestData) {
+      const place = placeData.thirdparty_places;
+      // Track interaction with this specific place
+      trackItemInteraction({
+        guestId: guestSession.guestData.id,
+        hotelId: guestSession.guestData.hotel_id,
+        sessionId: guestSession.guestData.id,
+        sectionType: "gastronomy",
+        itemId: place.id,
+        itemName: place.name || "Unknown Place",
+        itemCategory: place.category || "gastronomy",
+        actionType: "click",
+      });
+    }
+    originalHandlePlaceClick(placeId);
+  };
 
   const { hotelData } = guestSession;
 

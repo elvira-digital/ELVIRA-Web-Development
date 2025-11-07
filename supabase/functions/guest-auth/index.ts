@@ -302,7 +302,10 @@ Deno.serve(async (req) => {
       .setIssuer("supabase")
       .sign(secretKey);
 
-    // Upsert guest's email and role into the profiles table
+    // NOTE: Guests don't need profiles table entries
+    // They use custom JWT authentication without Supabase Auth
+    // Commenting out profile upsert to avoid foreign key constraint errors
+    /*
     const { error: profileUpsertError } = await supabaseAdmin
       .from("profiles")
       .upsert(
@@ -321,6 +324,9 @@ Deno.serve(async (req) => {
     if (profileUpsertError) {
       console.error("⚠️ Supabase Profile Upsert Error:", profileUpsertError);
     }
+    */
+
+    console.log("✅ Guest authentication successful - JWT created");
 
     console.log("🎯 Final response guestData structure:", {
       id: completeGuestData.id,

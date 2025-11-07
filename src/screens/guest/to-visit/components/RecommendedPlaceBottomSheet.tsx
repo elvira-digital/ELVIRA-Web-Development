@@ -10,6 +10,8 @@ import { GuestBottomSheet } from "../../shared/modals/base/GuestBottomSheet";
 import { PhotoGalleryViewer } from "../../shared/photo-gallery/components";
 import { MapPin, Navigation } from "lucide-react";
 import type { Database } from "../../../../types/database";
+import { useGuestAuth } from "../../../../contexts/guest/GuestAuthContext";
+import { useDetailViewTracking } from "../../../../hooks/guest-analytics/useDetailViewTracking";
 
 type RecommendedPlace =
   Database["public"]["Tables"]["hotel_recommended_places"]["Row"] & {
@@ -50,11 +52,24 @@ function calculateDistance(
 export const RecommendedPlaceBottomSheet: React.FC<
   RecommendedPlaceBottomSheetProps
 > = ({ isOpen, onClose, place, hotelCoordinates }) => {
+  const { guestSession } = useGuestAuth();
   const [viewerOpen, setViewerOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Track detail view duration
+  useDetailViewTracking({
+    isOpen,
+    guestId: guestSession?.guestData?.id,
+    hotelId: guestSession?.guestData?.hotel_id,
+    sessionId: guestSession?.guestData?.id,
+    sectionType: "to-visit",
+    itemId: place?.id,
+    itemName: place?.name,
+    itemCategory: place?.category,
+  });
 
   // Parse image URLs from JSON string
   const imageUrls: string[] = React.useMemo(() => {

@@ -10,6 +10,8 @@ import { GuestBottomSheet } from "../base/GuestBottomSheet";
 import { MapPin, Plus, Check } from "lucide-react";
 import { useGuestCart } from "../../../../../contexts/guest/GuestCartContext";
 import { GuestButton } from "../../../../../components/guest/shared/buttons/GuestButton";
+import { useGuestAuth } from "../../../../../contexts/guest/GuestAuthContext";
+import { useDetailViewTracking } from "../../../../../hooks/guest-analytics/useDetailViewTracking";
 
 export interface AmenityDetailData {
   id: string;
@@ -30,8 +32,21 @@ interface AmenityDetailBottomSheetProps {
 export const AmenityDetailBottomSheet: React.FC<
   AmenityDetailBottomSheetProps
 > = ({ isOpen, onClose, amenity }) => {
+  const { guestSession } = useGuestAuth();
   const { addToAmenityCart, removeFromAmenityCart, isAmenityInCart } =
     useGuestCart();
+
+  // Track detail view duration
+  useDetailViewTracking({
+    isOpen,
+    guestId: guestSession?.guestData?.id,
+    hotelId: guestSession?.guestData?.hotel_id,
+    sessionId: guestSession?.guestData?.id,
+    sectionType: "amenities",
+    itemId: amenity?.id,
+    itemName: amenity?.name,
+    itemCategory: amenity?.category,
+  });
 
   if (!amenity) return null;
 

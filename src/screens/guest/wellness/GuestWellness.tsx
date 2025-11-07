@@ -6,6 +6,7 @@ import { useGuestWellnessPlaces } from "../../../hooks/guest-management/wellness
 import { PlaceDetailBottomSheet } from "../shared/modals";
 import { GuestPlacesMapView } from "../shared/maps";
 import { usePlaceMapView } from "../shared/hooks";
+import { trackItemInteraction } from "../../../services/guest-analytics/realTimeTracking";
 
 interface GuestWellnessProps {
   onNavigate?: (path: string) => void;
@@ -31,7 +32,7 @@ export const GuestWellness: React.FC<GuestWellnessProps> = ({ onNavigate }) => {
     filteredPlaces,
     filteredMapPlaces,
     setSearchQuery,
-    handlePlaceClick,
+    handlePlaceClick: originalHandlePlaceClick,
     handleCloseDetail,
     handleMapClick,
     handleCloseMap,
@@ -46,6 +47,31 @@ export const GuestWellness: React.FC<GuestWellnessProps> = ({ onNavigate }) => {
   if (!guestSession) {
     return null;
   }
+
+  // Wrapper to track clicks before opening detail
+  const handlePlaceClick = (placeId: string) => {
+    // Find the place data with nested thirdparty_places
+    const placeData = wellnessPlaces.find((item: any) => {
+      const place = item.thirdparty_places;
+      return place?.id === placeId;
+    });
+
+    if (placeData && guestSession?.guestData) {
+      const place = placeData.thirdparty_places;
+      // Track interaction with this specific place
+      trackItemInteraction({
+        guestId: guestSession.guestData.id,
+        hotelId: guestSession.guestData.hotel_id,
+        sessionId: guestSession.guestData.id,
+        sectionType: "wellness",
+        itemId: place.id,
+        itemName: place.name || "Unknown Place",
+        itemCategory: place.category || "wellness",
+        actionType: "click",
+      });
+    }
+    originalHandlePlaceClick(placeId);
+  };
 
   const { hotelData } = guestSession;
 

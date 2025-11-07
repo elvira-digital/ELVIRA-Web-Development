@@ -11,6 +11,8 @@ import { Utensils, Plus } from "lucide-react";
 import { useGuestCart } from "../../../../../contexts/guest/GuestCartContext";
 import { GuestButton } from "../../../../../components/guest/shared/buttons/GuestButton";
 import { QuantityControl } from "../../../../../components/guest/shared/buttons/QuantityControl";
+import { useGuestAuth } from "../../../../../contexts/guest/GuestAuthContext";
+import { useDetailViewTracking } from "../../../../../hooks/guest-analytics/useDetailViewTracking";
 
 export interface MenuItemDetailData {
   id: string;
@@ -34,12 +36,25 @@ interface MenuItemDetailBottomSheetProps {
 export const MenuItemDetailBottomSheet: React.FC<
   MenuItemDetailBottomSheetProps
 > = ({ isOpen, onClose, item }) => {
+  const { guestSession } = useGuestAuth();
   const {
     addToRestaurantCart,
     incrementRestaurantItem,
     decrementRestaurantItem,
     getRestaurantItemQuantity,
   } = useGuestCart();
+
+  // Track detail view duration
+  useDetailViewTracking({
+    isOpen,
+    guestId: guestSession?.guestData?.id,
+    hotelId: guestSession?.guestData?.hotel_id,
+    sessionId: guestSession?.guestData?.id,
+    sectionType: "restaurant",
+    itemId: item?.id,
+    itemName: item?.name,
+    itemCategory: item?.category,
+  });
 
   if (!item) return null;
 

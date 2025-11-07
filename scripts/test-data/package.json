@@ -5,7 +5,8 @@
   "description": "Generate fake test data for ELVIRA Hotel Management System",
   "main": "index.js",
   "scripts": {
-    "generate": "node index.js"
+    "generate": "node index.js",
+    "generate:orders": "node generate-orders.js"
   },
   "dependencies": {
     "@faker-js/faker": "^8.0.0",

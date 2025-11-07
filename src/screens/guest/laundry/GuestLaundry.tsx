@@ -10,6 +10,7 @@ import { GuestLaundryHeader } from "./components";
 import { MenuCategorySection } from "../shared/cards/menu-item";
 import { useGuestLaundryServices } from "../../../hooks/guest-management/laundry";
 import { LaundryCartBottomSheet } from "../cart";
+import { trackItemInteraction } from "../../../services/guest-analytics/realTimeTracking";
 
 interface GuestLaundryProps {
   onNavigate?: (path: string) => void;
@@ -74,9 +75,40 @@ export const GuestLaundry: React.FC<GuestLaundryProps> = ({ onNavigate }) => {
     return null;
   }
 
+  const handleCardClick = (itemId: string) => {
+    const service = services.find((s) => s.id === itemId);
+    if (service && guestSession?.guestData) {
+      // Track interaction with this specific laundry service
+      trackItemInteraction({
+        guestId: guestSession.guestData.id,
+        hotelId: guestSession.guestData.hotel_id,
+        sessionId: guestSession.guestData.id,
+        sectionType: "laundry",
+        itemId: service.id,
+        itemName: service.description,
+        itemCategory: service.category,
+        actionType: "click",
+      });
+    }
+  };
+
   const handleAddItem = (itemId: string) => {
     const service = services.find((s) => s.id === itemId);
     if (service) {
+      // Track add to cart interaction
+      if (guestSession?.guestData) {
+        trackItemInteraction({
+          guestId: guestSession.guestData.id,
+          hotelId: guestSession.guestData.hotel_id,
+          sessionId: guestSession.guestData.id,
+          sectionType: "laundry",
+          itemId: service.id,
+          itemName: service.description,
+          itemCategory: service.category,
+          actionType: "add_to_cart",
+        });
+      }
+
       addToLaundryCart({
         id: service.id,
         name: service.description,
@@ -125,7 +157,7 @@ export const GuestLaundry: React.FC<GuestLaundryProps> = ({ onNavigate }) => {
               price: service.price,
               quantity: getLaundryItemQuantity(service.id),
             }))}
-            onCardClick={() => {}} // No detail modal for laundry services
+            onCardClick={handleCardClick}
             onAddClick={handleAddItem}
             onIncrement={incrementLaundryItem}
             onDecrement={decrementLaundryItem}

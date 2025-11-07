@@ -6,6 +6,10 @@ import {
   formatDuration,
 } from "./utils.js";
 import { generateGuests } from "./generators/guests.js";
+import { generateAmenityRequests } from "./generators/amenity-requests.js";
+import { generateRestaurantOrders } from "./generators/restaurant-orders.js";
+import { generateShopOrders } from "./generators/shop-orders.js";
+import { generateLaundryOrders } from "./generators/laundry-orders.js";
 import { CONFIG } from "./config.js";
 
 /**
@@ -28,11 +32,11 @@ async function generateTestGuests() {
     console.log("\n🏨 Finding hotel...");
     const hotelId = await getTestHotelId(supabase);
 
-    // Step 3: Generate guest data (using database hash function)
+    // Step 3: Generate guest data for rooms (using database hash function)
     const { guests, guestPersonalData } = await generateGuests(
       supabase,
       hotelId,
-      CONFIG.guestsCount
+      CONFIG.roomsCount
     );
 
     // Step 4: Insert guests into database
@@ -56,9 +60,15 @@ async function generateTestGuests() {
     console.log("║   ✨ SUCCESS!                                         ║");
     console.log("╚═══════════════════════════════════════════════════════╝");
     console.log(`\n📊 Summary:`);
-    console.log(`   • Guests created: ${formatNumber(guests.length)}`);
+    console.log(`   • Rooms created: ${formatNumber(CONFIG.roomsCount)}`);
+    console.log(`   • Total guests: ${formatNumber(guests.length)}`);
     console.log(
       `   • Personal data records: ${formatNumber(guestPersonalData.length)}`
+    );
+    console.log(
+      `   • Avg guests per room: ${(guests.length / CONFIG.roomsCount).toFixed(
+        2
+      )}`
     );
     console.log(`   • Hotel ID: ${hotelId}`);
     console.log(`   • Time taken: ${formatDuration(duration)}`);
@@ -68,8 +78,9 @@ async function generateTestGuests() {
       `   • Use the room numbers and codes shown above to test guest login`
     );
     console.log(
-      `   • All guests have valid tokens (expire 1-14 days from now)`
+      `   • All guests have valid tokens (checkout dates are in the future)`
     );
+    console.log(`   • Guests in the same room share the same session_id`);
     console.log(`   • Check Guest Management page to see the new guests\n`);
   } catch (error) {
     console.error("\n❌ Error generating test data:", error.message);

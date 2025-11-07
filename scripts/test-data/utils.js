@@ -105,9 +105,9 @@ export async function insertBatch(supabase, table, data, batchSize = 100) {
         const progress = ((batchNumber / totalBatches) * 100).toFixed(0);
         console.log(`   ✓ Batch ${batchNumber}/${totalBatches} (${progress}%)`);
 
-        // Small delay between batches
+        // Small delay between batches to avoid rate limiting
         if (batchNumber < totalBatches) {
-          await new Promise((resolve) => setTimeout(resolve, 500));
+          await new Promise((resolve) => setTimeout(resolve, 100)); // Reduced from 500ms to 100ms
         }
       } catch (error) {
         retries--;

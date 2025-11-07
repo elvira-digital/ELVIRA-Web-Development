@@ -7,6 +7,8 @@
 import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import type { Database } from "../../../../types/database";
+import { trackItemInteraction } from "../../../../services/guest-analytics/realTimeTracking";
+import { useGuestAuth } from "../../../../contexts/guest";
 
 type QARecommendation =
   Database["public"]["Tables"]["qa_recommendations"]["Row"];
@@ -21,8 +23,23 @@ export const QACategoryAccordion: React.FC<QACategoryAccordionProps> = ({
   items,
 }) => {
   const [openItemId, setOpenItemId] = useState<string | null>(null);
+  const { guestSession } = useGuestAuth();
 
   const toggleItem = (id: string) => {
+    // Track the interaction when opening a Q&A item
+    const item = items.find((q) => q.id === id);
+    if (item && guestSession?.guestData && openItemId !== id) {
+      trackItemInteraction({
+        guestId: guestSession.guestData.id,
+        hotelId: guestSession.guestData.hotel_id,
+        sessionId: guestSession.guestData.id,
+        sectionType: "qa",
+        itemId: item.id,
+        itemName: item.question || "Unknown Question",
+        itemCategory: item.category || "general",
+        actionType: "click",
+      });
+    }
     setOpenItemId(openItemId === id ? null : id);
   };
 

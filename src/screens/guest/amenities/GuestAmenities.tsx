@@ -9,6 +9,7 @@ import {
 } from "../shared/modals";
 import { AmenityCartBottomSheet } from "../cart";
 import type { MenuItemCardProps } from "../shared/cards/menu-item/MenuItemCard";
+import { trackItemInteraction } from "../../../services/guest-analytics/realTimeTracking";
 
 interface GuestAmenitiesProps {
   onNavigate?: (path: string) => void;
@@ -71,7 +72,18 @@ export const GuestAmenities: React.FC<GuestAmenitiesProps> = ({
 
   const handleAmenityClick = (itemId: string) => {
     const amenity = amenities?.find((a) => a.id === itemId);
-    if (amenity) {
+    if (amenity && guestSession?.guestData) {
+      // Track interaction with this specific amenity
+      trackItemInteraction({
+        guestId: guestSession.guestData.id,
+        hotelId: guestSession.guestData.hotel_id,
+        sessionId: guestSession.guestData.id,
+        sectionType: "amenities",
+        actionType: "click",
+        itemId: itemId,
+        itemName: amenity.name,
+      });
+
       setSelectedAmenity(amenity);
       setIsDetailOpen(true);
     }

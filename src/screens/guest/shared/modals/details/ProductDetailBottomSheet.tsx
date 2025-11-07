@@ -11,6 +11,8 @@ import { Package, Plus } from "lucide-react";
 import { useGuestCart } from "../../../../../contexts/guest/GuestCartContext";
 import { GuestButton } from "../../../../../components/guest/shared/buttons/GuestButton";
 import { QuantityControl } from "../../../../../components/guest/shared/buttons/QuantityControl";
+import { useGuestAuth } from "../../../../../contexts/guest";
+import { useDetailViewTracking } from "../../../../../hooks/guest-analytics/useDetailViewTracking";
 
 export interface ProductDetailData {
   id: string;
@@ -34,12 +36,25 @@ interface ProductDetailBottomSheetProps {
 export const ProductDetailBottomSheet: React.FC<
   ProductDetailBottomSheetProps
 > = ({ isOpen, onClose, product }) => {
+  const { guestSession } = useGuestAuth();
   const {
     addToShopCart,
     incrementShopItem,
     decrementShopItem,
     getShopItemQuantity,
   } = useGuestCart();
+
+  // Track detail view duration
+  useDetailViewTracking({
+    isOpen,
+    guestId: guestSession?.guestData?.id,
+    hotelId: guestSession?.guestData?.hotel_id,
+    sessionId: guestSession?.guestData?.id,
+    sectionType: "shop",
+    itemId: product?.id,
+    itemName: product?.name,
+    itemCategory: product?.category,
+  });
 
   if (!product) return null;
 
